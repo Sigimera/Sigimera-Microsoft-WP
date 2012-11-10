@@ -32,6 +32,18 @@ namespace SigimeraModel
         /// <summary>
         /// Creates and adds a few ItemViewModel objects into the Items collection.
         /// </summary>
+        public static RootObject GetSingleCrisis(int crisisId)
+        {
+            using (SigimeraDataContext context = new SigimeraDataContext(Shared.CONNECTION_STRING))
+            {
+                IQueryable<RootObject> query = from s in context.CrisisItems where s.CrisisId == crisisId select s;
+                return query.First();
+            }
+        }
+
+        /// <summary>
+        /// Creates and adds a few ItemViewModel objects into the Items collection.
+        /// </summary>
         public static List<RootObject> GetCrisis(int elemntsCountToRetrieve)
         {
             List<RootObject> lstCategories = new List<RootObject>();

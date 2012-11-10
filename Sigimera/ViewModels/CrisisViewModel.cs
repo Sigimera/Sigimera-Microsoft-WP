@@ -54,5 +54,12 @@ namespace Sigimera
             this.IsDataLoaded = true;
         }
 
+                /// <summary>
+        /// Creates and adds a few ItemViewModel objects into the Items collection.
+        /// </summary>
+        public RootObject LoadSingleCrisis(int crisisId)
+        {
+            return DataCommunication.GetSingleCrisis(crisisId);
+        }
     }
 }

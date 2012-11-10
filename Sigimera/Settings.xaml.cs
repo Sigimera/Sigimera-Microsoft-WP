@@ -58,15 +58,6 @@ namespace Sigimera
                 //Sort BY
                 AppSettings.StoreSetting("SortBy", lstSortBy.SelectedIndex.ToString());
 
-                //Magnitude Filter
-                AppSettings.StoreSetting("NotificationMagnitude", txtMagnitude.Text);
-
-                //Notification Time
-                AppSettings.StoreSetting("NotificationTime", lstNotificationTime.SelectedIndex.ToString());
-
-                //Notification Type
-                AppSettings.StoreSetting("NotificationType", lstNotification.SelectedIndex.ToString());
-
             }
             catch (Exception ex)
             {
@@ -84,26 +75,6 @@ namespace Sigimera
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
             string value;
-
-            //Magnitude Filter
-            if (AppSettings.TryGetSetting<string>("NotificationMagnitude", out value))
-            {
-                sldMagnitude.Value = Convert.ToInt32(value);
-            }
-            else
-            {
-                sldMagnitude.Value = 6;
-            }
-
-            //Notification Time 
-            if (AppSettings.TryGetSetting<string>("NotificationTime", out value))
-            {
-                lstNotificationTime.SelectedIndex = Convert.ToInt32(value); ;
-            }
-            else
-            {
-                lstNotificationTime.SelectedIndex = 0;
-            }
 
             //Number of Earthquake Events
             if (AppSettings.TryGetSetting<string>("NumberOfEarthquakeEvents", out value))
@@ -127,16 +98,6 @@ namespace Sigimera
 
             object val;
 
-            //Notification Type
-            if (AppSettings.TryGetSetting<string>("NotificationType", out value))
-            {
-                lstNotification.SelectedIndex = Convert.ToInt32(value);
-            }
-            else
-            {
-                lstNotification.SelectedIndex = 2;
-            }
-
             bg.WorkerSupportsCancellation = true;
 
             bg.DoWork -= DoWork;
@@ -155,40 +116,12 @@ namespace Sigimera
                 //Number of Earthquake Events to Retrieve
                 sldNumberOfEarthquakeEvetns.Value = 20;
 
-                //Magnitude Filter
-                sldMagnitude.Value = 6;
-
                 lstSortBy.SelectedIndex = 0;
-
-                //Notification Time (past 30 minutes)
-                lstNotificationTime.SelectedIndex = 0;
-
-                //Notification Type
-                lstNotification.SelectedIndex = 2;
 
             }
             catch (Exception ex)
             {
                 MessageBox.Show("An error occured. We apologize for inconvenience.", "Error", MessageBoxButton.OK);
-            }
-        }
-
-        private void backgroundFilter_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            try
-            {
-                if (backgroundFilter.IsChecked == true)
-                {
-                    
-                }
-                else
-                {
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred. We apologize for inconvenience.", "Error", MessageBoxButton.OK);
             }
         }
 
@@ -243,6 +176,25 @@ namespace Sigimera
         private void DoWork(Object sender, DoWorkEventArgs args)
         {
             DataCommunication.ClearRecords();
+        }
+
+        private void ToggleSwitchPushNotification_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            try
+            {
+                if (ToggleSwitchPushNotification.IsChecked == true)
+                {
+
+                }
+                else
+                {
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred. We apologize for inconvenience.", "Error", MessageBoxButton.OK);
+            }
         }
 
     }

@@ -29,7 +29,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock x:Name="PortScanner" Text="Earthquake Watcher" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock x:Name="PortScanner" Text="Sigimera" Style="{StaticResource PhoneTextNormalStyle}"/>
             <TextBlock x:Name="PageTitle" Text="Settings" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
@@ -50,36 +50,10 @@
                         <TextBlock Text="Earthquake Events Displayed" Style="{StaticResource PhoneTextSubtleStyle}"  />
                         <TextBlock Name="txtNumberOfEarthquakeEvents" TextAlignment="Left" Text="{Binding Path=Value, ElementName=sldNumberOfEarthquakeEvetns, Converter={StaticResource truncate}}" Width="168"></TextBlock>
                     </toolkit:WrapPanel>
+
                     <Slider Name="sldNumberOfEarthquakeEvetns" LargeChange="5" SmallChange="1" Minimum="5" Maximum="50" Value="20"></Slider>
-
-                    <TextBlock Text="Map Settings" Style="{StaticResource PhoneTextTitle2Style}"  />
-
-                    <TextBlock Text="Pushpin Color (Magnitude 1-4)" Style="{StaticResource PhoneTextSubtleStyle}" />
-                    
-                    <TextBlock Text="Notification Settings" Style="{StaticResource PhoneTextTitle2Style}"  />
-
-                    <toolkit:WrapPanel>
-                        <TextBlock Name="lblMagnitudeHeader" Text="Notification Magnitude" Style="{StaticResource PhoneTextSubtleStyle}" Width="209" />
-                        <TextBlock Name="txtMagnitude" TextAlignment="Left" Text="{Binding Path=Value, ElementName=sldMagnitude, Converter={StaticResource truncate}}" Width="168"></TextBlock>
-                    </toolkit:WrapPanel>
-
-                    
-                    <Slider Name="sldMagnitude" LargeChange="2" SmallChange="1" Minimum="1" Maximum="10" Value="6"></Slider>
-
-                    <toolkit:ListPicker Name="lstNotificationTime"  SelectedIndex="0" Header="Event occured in last">
-                        <toolkit:ListPickerItem Name="PastThirtyMinutes" Content="30 minutes" ></toolkit:ListPickerItem>
-                        <toolkit:ListPickerItem Name="PastSixtyMinutes" Content="60 minutes" ></toolkit:ListPickerItem>
-                        <toolkit:ListPickerItem Name="PastThreeHours" Content="3 hours" ></toolkit:ListPickerItem>
-                        <toolkit:ListPickerItem Name="AnyTime" Content="any time" ></toolkit:ListPickerItem>
-                    </toolkit:ListPicker>
-
-                    <toolkit:ListPicker Name="lstNotification" SelectedIndex="2" Header="Notification Type">
-                        <toolkit:ListPickerItem Name="Toastnotification" Content="Toast Notification"></toolkit:ListPickerItem>
-                        <toolkit:ListPickerItem Name="LiveTileUpdate" Content="Live Tile Update"></toolkit:ListPickerItem>
-                        <toolkit:ListPickerItem Name="Both" Content="Both (Toast + Tile)"></toolkit:ListPickerItem>
-                    </toolkit:ListPicker>
-
-                    <toolkit:ToggleSwitch x:Name="backgroundFilter" Header="Notification Scheduler" IsChecked="False" Tap="backgroundFilter_Tap"></toolkit:ToggleSwitch>
+                   
+                    <toolkit:ToggleSwitch x:Name="ToggleSwitchPushNotification" Header="Notification Scheduler" IsChecked="False" Tap="ToggleSwitchPushNotification_Tap"></toolkit:ToggleSwitch>
 
                     <ProgressBar Name="pgbDeleting" Visibility="Collapsed"></ProgressBar>
                     <Button Name="btnClearData" Content="Clear data" Click="btnClearData_Click"></Button>

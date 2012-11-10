@@ -115,7 +115,13 @@ namespace Sigimera
 
         private void ListBoxLatestCrisis_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (ListBoxLatestCrisis.SelectedItem != null)
+            {
+                RootObject selectedItem = (RootObject)ListBoxLatestCrisis.SelectedItem;
 
+                string url = string.Format("/DetailsPage.xaml?Id={0}", selectedItem.CrisisId);
+                NavigationService.Navigate(new Uri(url, UriKind.Relative));
+            }
         }
 
         #region | Methods [private] |
