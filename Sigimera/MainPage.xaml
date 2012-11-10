@@ -30,12 +30,12 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <ListBox x:Name="ListBoxLatestCrisis" ItemsSource="{Binding Items}" Tap="ListBoxLatestCrisis_Tap" Height="500" >
+            <ListBox x:Name="ListBoxLatestCrisis" ItemsSource="{Binding Items}" Tap="ListBoxLatestCrisis_Tap" Height="610" >
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
                             <toolkit:WrapPanel>
-                                <Image Width="108" Source="{Binding ImageUrl}" Height="108" VerticalAlignment="Top"></Image>
+                                <Image Width="40" Source="{Binding ImageUrl}" Height="40" VerticalAlignment="Top"></Image>
                                 <TextBlock Text="{Binding dc_title}" VerticalAlignment="Top" TextWrapping="Wrap" Margin="10,0" Width="300" />
                                 <!--<StackPanel>
                                     <toolkit:WrapPanel>
