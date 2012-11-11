@@ -5,6 +5,7 @@
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -28,10 +29,51 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <StackPanel>
-                <TextBlock Text="{Binding crisis_alertLevel}"></TextBlock>
-                <TextBlock Text="{Binding crisis_severity}"></TextBlock>
-                <TextBlock Text="{Binding crisis_population}"></TextBlock>
-                <TextBlock Text="{Binding crisis_vulnerability}"></TextBlock>
+                <toolkit:WrapPanel>
+                    <Image Width="40" Height="40"></Image>
+                    <StackPanel Margin="10,0,0,0">
+                        <TextBlock Text="See crisis on map"></TextBlock>
+                        <toolkit:WrapPanel>
+                            <TextBlock Text="Longitude:" Style="{StaticResource PhoneTextSmallStyle}"></TextBlock>
+                        </toolkit:WrapPanel>
+                        <toolkit:WrapPanel>
+                            <TextBlock Text="Latitude:" Style="{StaticResource PhoneTextSmallStyle}"></TextBlock>
+                        </toolkit:WrapPanel>
+                    </StackPanel>
+                </toolkit:WrapPanel>
+
+                <toolkit:WrapPanel Margin="0,50,0,0">
+                    <Image Width="40" Height="40"></Image>
+                    <StackPanel Margin="10,0,0,0" Width="400">
+                        <TextBlock Text="{Binding dc_title}"></TextBlock>
+                        <TextBlock Text="Description" Margin="0,0,0,0" Style="{StaticResource PhoneTextSmallStyle}" TextWrapping="Wrap"></TextBlock>
+                    </StackPanel>
+                </toolkit:WrapPanel>
+
+                <toolkit:WrapPanel Margin="0,50,0,0">
+                    <Image Width="40" Height="40"></Image>
+                    <StackPanel Margin="10,0,0,0">
+                        <TextBlock Text="{Binding crisis_population}"></TextBlock>
+                        <TextBlock Text="Affected people" Margin="0,0,0,0" Style="{StaticResource PhoneTextSmallStyle}"></TextBlock>
+                    </StackPanel>
+                </toolkit:WrapPanel>
+
+                <toolkit:WrapPanel Margin="0,50,0,0">
+                    <Image Width="40" Height="40"></Image>
+                    <StackPanel Margin="10,0,0,0">
+                        <TextBlock Text="{Binding crisis_alertLevel}"></TextBlock>
+                        <TextBlock Text="Alert level" Margin="0,0,0,0" Style="{StaticResource PhoneTextSmallStyle}"></TextBlock>
+                    </StackPanel>
+                </toolkit:WrapPanel>
+
+                <toolkit:WrapPanel Margin="0,50,0,0">
+                    <Image Width="40" Height="40"></Image>
+                    <StackPanel Margin="10,0,0,0">
+                        <TextBlock Text="{Binding crisis_severity}"></TextBlock>
+                        <TextBlock Text="Severity" Margin="0,0,0,0" Style="{StaticResource PhoneTextSmallStyle}"></TextBlock>
+                    </StackPanel>
+                </toolkit:WrapPanel>
+
             </StackPanel>
         </Grid>
     </Grid>
