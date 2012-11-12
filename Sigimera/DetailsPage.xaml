@@ -45,8 +45,8 @@
                 <toolkit:WrapPanel Margin="0,50,0,0">
                     <Image Width="40" Height="40"></Image>
                     <StackPanel Margin="10,0,0,0" Width="400">
-                        <TextBlock Text="{Binding dc_title}"></TextBlock>
-                        <TextBlock Text="Description" Margin="0,0,0,0" Style="{StaticResource PhoneTextSmallStyle}" TextWrapping="Wrap"></TextBlock>
+                        <TextBlock Text="{Binding dc_title}" TextWrapping="Wrap"></TextBlock>
+                        <TextBlock Text="Description" Margin="0,0,0,0" Style="{StaticResource PhoneTextSmallStyle}"></TextBlock>
                     </StackPanel>
                 </toolkit:WrapPanel>
 

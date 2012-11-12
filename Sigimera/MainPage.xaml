@@ -35,19 +35,26 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <ListBox x:Name="ListBoxLatestCrisis" ItemsSource="{Binding Items}" Tap="ListBoxLatestCrisis_Tap" Height="610" >
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <toolkit:WrapPanel>
-                                <Image Width="40" Source="{Binding ImageUrl}" Height="40" VerticalAlignment="Top"></Image>
-                                <TextBlock Text="{Binding dc_title, Converter={StaticResource TextTrim}}" VerticalAlignment="Top" TextWrapping="Wrap" Margin="10,0" Width="390" />
-                                <TextBlock Text="{Binding dc_date}"></TextBlock>
-                            </toolkit:WrapPanel>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <controls:Pivot x:Name="PanoControl" HeaderTemplate="{StaticResource SmallPanoramaHeader}" Margin="0,-30,0,0">
+                <!--Pivot item one-->
+                <controls:PivotItem Header="Home" >
+                </controls:PivotItem>
+                <controls:PivotItem Header="Crises">
+                    <ListBox x:Name="ListBoxLatestCrisis" ItemsSource="{Binding Items}" Tap="ListBoxLatestCrisis_Tap">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,0,0,20">
+                                    <toolkit:WrapPanel>
+                                        <Image Width="40" Source="{Binding ImageUrl}" Height="40" VerticalAlignment="Top"></Image>
+                                        <TextBlock Text="{Binding dc_title}" VerticalAlignment="Top" TextTrimming="WordEllipsis" TextWrapping="NoWrap" Margin="10,0" Width="370" />
+                                        <TextBlock Text="{Binding dc_date}" Style="{StaticResource PhoneTextSmallStyle}" Margin="45,0,0,0"></TextBlock>
+                                    </toolkit:WrapPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </controls:PivotItem>
+            </controls:Pivot>
         </Grid>
     </Grid>
 
