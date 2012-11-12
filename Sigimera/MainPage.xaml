@@ -50,7 +50,14 @@
                             <Button Width="150" HorizontalAlignment="Right">Login</Button>
                         </StackPanel>
                         <StackPanel Name="StackPanelPostLogin">
-                            
+                            <toolkit:WrapPanel>
+                                <toolkit:HubTile Title="Nearby" Margin="20"></toolkit:HubTile>
+                                <toolkit:HubTile Title="Today" Margin="20"></toolkit:HubTile>
+                            </toolkit:WrapPanel>
+                            <toolkit:WrapPanel>
+                                <toolkit:HubTile Title="Latest" Margin="20"></toolkit:HubTile>
+                                <toolkit:HubTile Title="Month" Margin="20"></toolkit:HubTile>
+                            </toolkit:WrapPanel>
                         </StackPanel>
                     </StackPanel>
                 </controls:PivotItem>
