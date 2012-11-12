@@ -9,24 +9,24 @@
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     xmlns:local="clr-namespace:Sigimera"
-    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="728"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="False">
 
     <phone:PhoneApplicationPage.Resources>
         <local:TextTrimConverter x:Key="TextTrim" />
     </phone:PhoneApplicationPage.Resources>
-    
+
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
+
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
             <ProgressBar Name="pgbRequesting" Visibility="Collapsed"></ProgressBar>
@@ -38,6 +38,21 @@
             <controls:Pivot x:Name="PanoControl" HeaderTemplate="{StaticResource SmallPanoramaHeader}" Margin="0,-30,0,0">
                 <!--Pivot item one-->
                 <controls:PivotItem Header="Home" >
+                    <StackPanel Name="StackPanelHome">
+                        <StackPanel Name="StackPanelLogin" Visibility="Collapsed">
+                            <ProgressBar Visibility="Collapsed" Name="ProgressBarLogin"></ProgressBar>
+                            <TextBlock Style="{StaticResource PhoneTextLargeStyle}">login</TextBlock>
+                            <TextBlock Margin="10,10,0,0" Style="{StaticResource PhoneTextSmallStyle}" TextWrapping="Wrap">Welcome to the crises information system. Please login below</TextBlock>
+                            <TextBlock TextWrapping="Wrap" Margin="10,40,0,0">Username:</TextBlock>
+                            <TextBox></TextBox>
+                            <TextBlock TextWrapping="Wrap" Margin="10,40,0,0">Password:</TextBlock>
+                            <TextBox></TextBox>
+                            <Button Width="150" HorizontalAlignment="Right">Login</Button>
+                        </StackPanel>
+                        <StackPanel Name="StackPanelPostLogin">
+                            
+                        </StackPanel>
+                    </StackPanel>
                 </controls:PivotItem>
                 <controls:PivotItem Header="Crises">
                     <ListBox x:Name="ListBoxLatestCrisis" ItemsSource="{Binding Items}" Tap="ListBoxLatestCrisis_Tap">

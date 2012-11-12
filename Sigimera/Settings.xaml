@@ -11,8 +11,8 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True" Loaded="PhoneApplicationPage_Loaded">
+    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="False" Loaded="PhoneApplicationPage_Loaded">
 
     <phone:PhoneApplicationPage.Resources>
     </phone:PhoneApplicationPage.Resources>
@@ -29,7 +29,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock x:Name="PortScanner" Text="Sigimera" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <Image HorizontalAlignment="Left"  Width="150" Height="42" Source="/Sigimera;component/Images/logo.png" VerticalAlignment="Top"></Image>
             <TextBlock x:Name="PageTitle" Text="Settings" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
@@ -53,7 +53,7 @@
 
                     <Slider Name="sldNumberOfEarthquakeEvetns" LargeChange="5" SmallChange="1" Minimum="5" Maximum="50" Value="20"></Slider>
                    
-                    <toolkit:ToggleSwitch x:Name="ToggleSwitchPushNotification" Header="Notification Scheduler" IsChecked="False" Tap="ToggleSwitchPushNotification_Tap"></toolkit:ToggleSwitch>
+                    <toolkit:ToggleSwitch x:Name="ToggleSwitchPushNotification" Header="Push Notification" IsChecked="False" Tap="ToggleSwitchPushNotification_Tap"></toolkit:ToggleSwitch>
 
                     <ProgressBar Name="pgbDeleting" Visibility="Collapsed"></ProgressBar>
                     <Button Name="btnClearData" Content="Clear data" Click="btnClearData_Click"></Button>
