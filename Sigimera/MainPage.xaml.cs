@@ -75,7 +75,6 @@ namespace Sigimera
         {
             try
             {
-
                 if (successfullyLoaded)
                 {
                     //Load Map
@@ -89,6 +88,8 @@ namespace Sigimera
                     watcher.Start();
 
                     LoadLatestCrisis();
+
+                    AuthenticateUser();
                 }
                 else
                 {
@@ -265,5 +266,71 @@ namespace Sigimera
 
         #endregion
 
+        private void ButtonLogin_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(TextBoxUsername.Text) || string.IsNullOrEmpty(TextBoxPassword.Text))
+                {
+                    TextBlockError.Text = "Please provide a username or password.";
+                    if (string.IsNullOrEmpty(TextBoxUsername.Text))
+                    {
+                        TextBoxUsername.Focus();
+                    }
+                    else if (string.IsNullOrEmpty(TextBoxPassword.Text))
+                    {
+                        TextBoxPassword.Focus();
+                    }
+                }
+                else
+                {
+                    WebClient wc = new WebClient();
+                    wc.OpenReadCompleted += OnOpenReadCompleted;
+
+                    //TODO: Need to request with username and password from user
+                    //Always request ten new events
+                    wc.DownloadStringAsync(new Uri(Shared.GENERATE_TOKEN_URL));
+                }
+            }
+            catch (Exception ex)
+            {
+                TextBlockError.Text = "An error occurred. We apologize for inconvenience.";
+            }
+        }
+
+        private void OnOpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
+        {
+            try
+            {
+                //Grab the autehntication token 
+                var serializer = new DataContractJsonSerializer(typeof(AuthenticationToken));
+                AuthenticationToken authenticationToken = (AuthenticationToken)serializer.ReadObject(e.Result);
+
+                //Store the token
+                AppSettings.StoreSetting("AuthentToken", authenticationToken.auth_token);
+            }
+            catch (Exception ex)
+            {
+                TextBlockError.Text = "Token couldn't be retrieved.";
+            }
+        }
+
+        /// <summary>
+        /// This method authenticates user given that an authentication token exists in the database or no
+        /// </summary>
+        private void AuthenticateUser()
+        {
+            //Try to read the token from isolated storage
+            if (AppSettings.TryGetSetting("AuthentToken", out Shared.USER_AUTH_TOKEN))
+            {
+                StackPanelLogin.Visibility = System.Windows.Visibility.Collapsed;
+                StackPanelPostLogin.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                StackPanelLogin.Visibility = System.Windows.Visibility.Visible;
+                StackPanelPostLogin.Visibility = System.Windows.Visibility.Collapsed;
+            }
+        }
     }
 }

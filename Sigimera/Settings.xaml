@@ -48,7 +48,7 @@
 
                     <toolkit:WrapPanel>
                         <TextBlock Text="Earthquake Events Displayed" Style="{StaticResource PhoneTextSubtleStyle}"  />
-                        <TextBlock Name="txtNumberOfEarthquakeEvents" TextAlignment="Left" Text="{Binding Path=Value, ElementName=sldNumberOfEarthquakeEvetns, Converter={StaticResource truncate}}" Width="168"></TextBlock>
+                        <TextBlock Name="txtNumberOfEarthquakeEvents" TextAlignment="Left" Text="{Binding Path=Value, ElementName=sldNumberOfEarthquakeEvetns}" Width="168"></TextBlock>
                     </toolkit:WrapPanel>
 
                     <Slider Name="sldNumberOfEarthquakeEvetns" LargeChange="5" SmallChange="1" Minimum="5" Maximum="50" Value="20"></Slider>

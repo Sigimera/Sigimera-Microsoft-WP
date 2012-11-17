@@ -18,7 +18,9 @@ namespace SigimeraModel
         public const string CONNECTION_STRING = @"Data Source='isostore:/Sigimera.sdf';Password=geek-salvation;";
 
         public const string AUTH_TOKEN = "iL75qm8o1FpysThDYwVt";
+        public static string USER_AUTH_TOKEN = string.Empty;
         public const string CRISIS_LIST_URL = @"http://api.sigimera.org/v1/crises?auth_token={0}&output=short";
+        public const string GENERATE_TOKEN_URL = @"https://www.sigimera.org/api/v1/tokens.json";
 
         public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> source)
         {
