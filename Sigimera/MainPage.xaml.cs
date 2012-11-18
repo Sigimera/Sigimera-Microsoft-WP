@@ -266,6 +266,8 @@ namespace Sigimera
 
         #endregion
 
+        #region | Authentication |
+
         private void ButtonLogin_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -284,12 +286,10 @@ namespace Sigimera
                 }
                 else
                 {
-                    WebClient wc = new WebClient();
-                    wc.OpenReadCompleted += OnOpenReadCompleted;
+                    var request = HttpWebRequest.Create(Shared.GENERATE_TOKEN_URL);
+                    request.Method = "POST";
 
-                    //TODO: Need to request with username and password from user
-                    //Always request ten new events
-                    wc.DownloadStringAsync(new Uri(Shared.GENERATE_TOKEN_URL));
+                    var req = (IAsyncResult)request.BeginGetRequestStream(GetRequestStreamCallback, request);
                 }
             }
             catch (Exception ex)
@@ -298,22 +298,65 @@ namespace Sigimera
             }
         }
 
-        private void OnOpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
+        private void GetRequestStreamCallback(IAsyncResult asynchronousResult)
         {
             try
             {
-                //Grab the autehntication token 
-                var serializer = new DataContractJsonSerializer(typeof(AuthenticationToken));
-                AuthenticationToken authenticationToken = (AuthenticationToken)serializer.ReadObject(e.Result);
 
-                //Store the token
-                AppSettings.StoreSetting("AuthentToken", authenticationToken.auth_token);
+                string credentials = string.Format("email={0}&password={1}", TextBoxUsername.Text, TextBoxPassword.Text);
+
+                HttpWebRequest request = (HttpWebRequest)asynchronousResult.AsyncState;
+
+                // End the operation
+                Stream postStream = request.EndGetRequestStream(asynchronousResult);
+
+                // Convert the string into a byte array.
+                byte[] postBytes = Encoding.UTF8.GetBytes(credentials);
+
+                // Write to the request stream.
+                postStream.Write(postBytes, 0, postBytes.Length);
+                postStream.Close();
+
+                // Start the asynchronous operation to get the response
+                var result = (IAsyncResult)request.BeginGetResponse(GetResponseCallback, request);
             }
             catch (Exception ex)
             {
-                TextBlockError.Text = "Token couldn't be retrieved.";
+                TextBlockError.Text = "An error occurred while requesting. We apologize for inconvenience.";
             }
         }
+
+        private void GetResponseCallback(IAsyncResult result)
+        {
+            try
+            {
+                var request = (HttpWebRequest)result.AsyncState;
+                var response = request.EndGetResponse(result);
+
+                using (var stream = response.GetResponseStream())
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        //Grab the autehntication token 
+                        var serializer = new DataContractJsonSerializer(typeof(AuthenticationToken));
+                        AuthenticationToken authenticationToken = (AuthenticationToken)serializer.ReadObject(stream);
+
+                        Dispatcher.BeginInvoke(() =>
+                        {
+                            //Store the token
+                            AppSettings.StoreSetting("AuthentToken", authenticationToken.auth_token);
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TextBlockError.Text = "An error occurred while authorizing. We apologize for inconvenience.";
+            }
+
+        }
+
+        #endregion
 
         /// <summary>
         /// This method authenticates user given that an authentication token exists in the database or no
