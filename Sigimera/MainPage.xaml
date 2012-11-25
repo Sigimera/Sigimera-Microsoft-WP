@@ -4,11 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:my="clr-namespace:Microsoft.Phone.Controls.Maps;assembly=Microsoft.Phone.Controls.Maps"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
-    xmlns:local="clr-namespace:Sigimera"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="728"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -17,7 +17,7 @@
     shell:SystemTray.IsVisible="False">
 
     <phone:PhoneApplicationPage.Resources>
-        <local:TextTrimConverter x:Key="TextTrim" />
+        <!--<local:TextTrimConverter x:Key="TextTrim" />-->
     </phone:PhoneApplicationPage.Resources>
 
     <!--LayoutRoot is the root grid where all page content is placed-->
@@ -49,16 +49,51 @@
                             <PasswordBox Name="TextBoxPassword" MaxLength="30"></PasswordBox>
                             <Button Name="ButtonLogin" Width="150" HorizontalAlignment="Right" Click="ButtonLogin_Click">Login</Button>
                         </StackPanel>
-                        <StackPanel Name="StackPanelPostLogin"  Visibility="Collapsed">
+                        <StackPanel Name="StackPanelPostLogin"  Visibility="Visible">
                             <HyperlinkButton Name="HlinkLogout" Click="HlinkLogout_Click" HorizontalAlignment="Right">Logout</HyperlinkButton>
                             <toolkit:WrapPanel>
-                                <toolkit:HubTile Title="Nearby" Margin="20"></toolkit:HubTile>
-                                <toolkit:HubTile Title="Today" Margin="20"></toolkit:HubTile>
+                                <StackPanel Background="{StaticResource PhoneAccentBrush}" Width="195" Margin="10" Height="110">
+                                    <StackPanel Orientation="Horizontal" Height="110">
+                                        <Image HorizontalAlignment="Left" VerticalAlignment="Center" Width="48" Source="/Sigimera;component/Images/Home/about_icon.png" Height="48" Margin="10"></Image>
+                                        <TextBlock Text="{Binding NearestCrisis}" Margin="10" TextWrapping="Wrap" Width="110"></TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Background="{StaticResource PhoneAccentBrush}" Width="195" Margin="10" Height="110">
+                                    <StackPanel Orientation="Horizontal" Height="110">
+                                        <Image HorizontalAlignment="Left" VerticalAlignment="Center" Width="48" Source="/Sigimera;component/Images/Home/today_small.png" Height="48" Margin="10"></Image>
+                                        <TextBlock Text="{Binding NearestCrisis}" Margin="10" TextWrapping="Wrap" Width="110"></TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
                             </toolkit:WrapPanel>
                             <toolkit:WrapPanel>
-                                <toolkit:HubTile Title="Latest" Margin="20"></toolkit:HubTile>
-                                <toolkit:HubTile Title="Month" Margin="20"></toolkit:HubTile>
+                                <StackPanel Background="{StaticResource PhoneAccentBrush}" Width="195" Margin="10" Height="110">
+                                    <StackPanel Orientation="Horizontal" Height="110">
+                                        <Image HorizontalAlignment="Left" VerticalAlignment="Center" Width="48" Source="/Sigimera;component/Images/Home/latest_small.png" Height="48" Margin="10"></Image>
+                                        <TextBlock Text="{Binding NearestCrisis}" Margin="10" TextWrapping="Wrap" Width="110"></TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Background="{StaticResource PhoneAccentBrush}" Width="195" Margin="10" Height="110">
+                                    <StackPanel Orientation="Horizontal" Height="110">
+                                        <Image HorizontalAlignment="Left" VerticalAlignment="Center" Width="48" Source="/Sigimera;component/Images/Home/all_small.png" Height="48" Margin="10"></Image>
+                                        <TextBlock Text="{Binding NearestCrisis}" Margin="10" TextWrapping="Wrap" Width="110"></TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
                             </toolkit:WrapPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                <StackPanel Width="100">
+                                    <TextBlock Margin="10">italy</TextBlock>
+                                    <TextBlock Style="{StaticResource PhoneTextSmallStyle}">country</TextBlock>
+                                </StackPanel>
+                                <StackPanel Width="200">
+                                    <TextBlock Margin="10">24442</TextBlock>
+                                    <TextBlock Style="{StaticResource PhoneTextSmallStyle}">Affected people</TextBlock>
+                                </StackPanel>
+                                <StackPanel>
+                                    <TextBlock Margin="10">6.2</TextBlock>
+                                    <TextBlock Style="{StaticResource PhoneTextSmallStyle}">Magnitude</TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                            <my:Map Height="200" HorizontalAlignment="Left" Name="map1" VerticalAlignment="Top" Width="450" CredentialsProvider="Aqn27uaJTGK2Xs8aDTSIWBCKlShjvXM8cgDfVnahbrVs1SrxcIMfffK68XKKTqYP" />
                         </StackPanel>
                     </StackPanel>
                 </controls:PivotItem>

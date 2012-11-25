@@ -88,7 +88,7 @@ namespace Sigimera
                     watcher.PositionChanged += new EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>(watcher_PositionChanged);
                     watcher.Start();
 
-                    //LoadLatestCrisis();
+                    LoadLatestCrisis();
 
                     AuthenticateUser();
                 }
@@ -314,41 +314,6 @@ namespace Sigimera
             string authInfo = userName + ":" + userPassword;
             authInfo = Convert.ToBase64String(Encoding.UTF8.GetBytes(authInfo));
             request.Headers["Authorization"] = "Basic " + authInfo;
-        }
-
-        private void GetRequestStreamCallback(IAsyncResult asynchronousResult)
-        {
-            try
-            {
-                string credentials = string.Empty;
-                Dispatcher.BeginInvoke(() =>
-                {
-                    credentials = string.Format("email={0}&password={1}", TextBoxUsername.Text, TextBoxPassword.Password);
-                });
-
-                HttpWebRequest request = (HttpWebRequest)asynchronousResult.AsyncState;
-
-                // End the operation
-                Stream postStream = request.EndGetRequestStream(asynchronousResult);
-
-                // Convert the string into a byte array.
-                byte[] postBytes = Encoding.UTF8.GetBytes(credentials);
-
-                // Write to the request stream.
-                postStream.Write(postBytes, 0, postBytes.Length);
-                postStream.Close();
-
-                // Start the asynchronous operation to get the response
-                var result = (IAsyncResult)request.BeginGetResponse(new AsyncCallback(GetResponseCallback), request);
-            }
-            catch (Exception ex)
-            {
-                Dispatcher.BeginInvoke(() =>
-                {
-                    TextBlockError.Text = "An error occurred while requesting. We apologize for inconvenience.";
-                    SetLoginProcessing(false);
-                });
-            }
         }
 
         private void GetResponseCallback(IAsyncResult result)

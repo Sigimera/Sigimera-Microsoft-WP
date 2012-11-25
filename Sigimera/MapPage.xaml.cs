@@ -40,7 +40,6 @@ namespace Sigimera
         {
             try
             {
-                place = this.PageTitle.Text = NavigationContext.QueryString["Name"];
                 magnitude = Convert.ToDouble(NavigationContext.QueryString["Magnitude"]);
                 longitude = Convert.ToDouble(NavigationContext.QueryString["Longitude"]);
                 latitude = Convert.ToDouble(NavigationContext.QueryString["Latitude"]);

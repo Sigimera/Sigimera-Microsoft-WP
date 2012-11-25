@@ -156,6 +156,10 @@
     <Content Include="Icons\light\appbar.questionmark.rest.png" />
     <Content Include="Icons\light\appbar.refresh.rest.png" />
     <Content Include="Icons\light\appbar.share.rest.png" />
+    <Resource Include="Images\Home\all_small.png" />
+    <Resource Include="Images\Home\latest_small.png" />
+    <Resource Include="Images\Home\today_small.png" />
+    <Resource Include="Images\Home\about_icon.png" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>
