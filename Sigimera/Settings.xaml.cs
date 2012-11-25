@@ -172,10 +172,12 @@ namespace Sigimera
                 {
                     App.DEVICE_ID = deviceId;
                     ToggleSwitchRegisterUnregister.IsChecked = true;
+                    btnUpdateLocation.IsEnabled = true;
                 }
                 else
                 {
                     ToggleSwitchRegisterUnregister.IsChecked = false;
+                    btnUpdateLocation.IsEnabled = false;
                 }
             }
         }
@@ -224,7 +226,7 @@ namespace Sigimera
         }
 
         #region | Registration |
-        
+
         private void RequestDeviceRegisgration()
         {
             try
@@ -305,11 +307,18 @@ namespace Sigimera
                     App.DEVICE_ID = response.Headers["Location"].Replace("http://api.sigimera.org/v1/mpn/", string.Empty);
                     AppSettings.StoreSetting(Shared.SETTING_DEVICE_ID, App.DEVICE_ID);
 
-                    btnUpdateLocation.IsEnabled = true;
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        btnUpdateLocation.IsEnabled = true;
+                    });
                 }
 
-                response.Close();
+                Dispatcher.BeginInvoke(() =>
+                {
+                    SetProcessing(false);
+                });
 
+                response.Close();
             }
             catch (Exception ex)
             {
@@ -320,18 +329,10 @@ namespace Sigimera
                     SetProcessing(false);
                 });
             }
-            finally
-            {
-                Dispatcher.BeginInvoke(() =>
-                {
-                    TextBlockError.Text = "";
-                    SetProcessing(false);
-                });
-            }
         }
 
         #endregion
-        
+
         #region | Unregistration |
 
         private void RequestDeviceUnregistration()
@@ -340,10 +341,12 @@ namespace Sigimera
             {
                 SetProcessing(true);
 
-                var request = HttpWebRequest.Create(string.Format(Shared.URL_UNREGISTER_DEVICE, App.DEVICE_ID));
+                var request = HttpWebRequest.Create(string.Format(Shared.URL_UNREGISTER_DEVICE, App.DEVICE_ID, App.USER_AUTH_TOKEN));
                 request.Method = "DELETE";
 
-                var req = (IAsyncResult)request.BeginGetRequestStream(new AsyncCallback(GetDeviceUnRegistrationRequestStreamCallback), request);
+                //var req = (IAsyncResult)request.BeginGetRequestStream(new AsyncCallback(GetDeviceUnRegistrationRequestStreamCallback), request);
+
+                var result = (IAsyncResult)request.BeginGetResponse(new AsyncCallback(GetDeviceUnRegistrationResponseCallback), request);
             }
             catch (Exception ex)
             {
@@ -396,9 +399,15 @@ namespace Sigimera
                 AppSettings.DeleteSetting(Shared.SETTING_DEVICE_ID);
                 App.DEVICE_ID = string.Empty;
 
-                btnUpdateLocation.IsEnabled = false;
-
                 response.Close();
+
+                Dispatcher.BeginInvoke(() =>
+                {
+                    btnUpdateLocation.IsEnabled = false;
+                    SetProcessing(false);
+
+                    TextBlockError.Text = "Device is successfully unregistered.";
+                });
             }
             catch (Exception ex)
             {
@@ -406,14 +415,6 @@ namespace Sigimera
                 {
                     TextBlockError.Text = "An error occurred while unregistering device. We apologize for inconvenience.";
                     ToggleSwitchRegisterUnregister.IsChecked = true;
-                    SetProcessing(false);
-                });
-            }
-            finally
-            {
-                Dispatcher.BeginInvoke(() =>
-                {
-                    TextBlockError.Text = "";
                     SetProcessing(false);
                 });
             }
@@ -467,6 +468,8 @@ namespace Sigimera
         {
             try
             {
+                cooridnate = null;  //Coorindate watcher event was firing twice so this check is placed
+
                 watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.Default);
                 if (watcher.Permission == GeoPositionPermission.Granted)
                 {
@@ -489,16 +492,20 @@ namespace Sigimera
         {
             try
             {
+                if (cooridnate == null)
+                {
+                    cooridnate = e.Position.Location;
+                    watcher.Stop();
 
-                cooridnate = e.Position.Location;
-                watcher.Stop();
+                    //Now request location update
 
-                //Now request location update
+                    //var request = HttpWebRequest.Create(string.Format(Shared.URL_UPDATE_DEVICE, App.DEVICE_ID));
+                    var request = HttpWebRequest.Create(string.Format(Shared.URL_UPDATE_DEVICE, App.DEVICE_ID, App.USER_AUTH_TOKEN, cooridnate.Latitude, cooridnate.Longitude));
+                    request.Method = "PUT";
 
-                var request = HttpWebRequest.Create(string.Format(Shared.URL_UPDATE_DEVICE, App.DEVICE_ID));
-                request.Method = "PUT";
-
-                var req = (IAsyncResult)request.BeginGetRequestStream(new AsyncCallback(GetDeviceUpdateRequestStreamCallback), request);
+                    //var req = (IAsyncResult)request.BeginGetRequestStream(new AsyncCallback(GetDeviceUpdateRequestStreamCallback), request);
+                    var result = (IAsyncResult)request.BeginGetResponse(new AsyncCallback(GetDeviceUpdateResponseCallback), request);
+                }
             }
             catch (Exception ex)
             {
@@ -512,7 +519,7 @@ namespace Sigimera
             try
             {
                 string dataToPost = string.Empty;
-                dataToPost = string.Format("auth_token={0}&lat={1}&lon={2}", App.USER_AUTH_TOKEN,cooridnate.Latitude,cooridnate.Longitude);
+                dataToPost = string.Format("auth_token={0}&lat={1}&lon={2}", App.USER_AUTH_TOKEN, cooridnate.Latitude, cooridnate.Longitude);
 
                 HttpWebRequest request = (HttpWebRequest)asynchronousResult.AsyncState;
 
@@ -549,8 +556,11 @@ namespace Sigimera
 
                 response.Close();
 
-                TextBlockError.Text = "Your location is updated.";
-                SetProcessing(false);
+                Dispatcher.BeginInvoke(() =>
+                {
+                    TextBlockError.Text = "Your current location is reflected on the server.";
+                    SetProcessing(false);
+                });
             }
             catch (Exception ex)
             {
@@ -558,14 +568,6 @@ namespace Sigimera
                 {
                     TextBlockError.Text = "An error occurred while updating device location. We apologize for inconvenience.";
                     ToggleSwitchRegisterUnregister.IsChecked = true;
-                    SetProcessing(false);
-                });
-            }
-            finally
-            {
-                Dispatcher.BeginInvoke(() =>
-                {
-                    TextBlockError.Text = "";
                     SetProcessing(false);
                 });
             }

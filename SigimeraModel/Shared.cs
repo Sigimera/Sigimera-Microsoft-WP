@@ -42,9 +42,11 @@ namespace SigimeraModel
 
         //The call below creates a token if exists none otherwise old one is returned
         public const string URL_GENERATE_TOKEN = @"http://api.sigimera.org/v1/tokens.json";
-        public const string URL_REGISTER_DEVICE = @"http://api.sigimera.org/v1/mpn.json";   //POST
-        public const string URL_UNREGISTER_DEVICE = @"http://api.sigimera.org/v1/mpn/{0}/";   //DELETE
-        public const string URL_UPDATE_DEVICE = @"http://api.sigimera.org/v1/mpn/{0}/";   //PUT
+        public const string URL_REGISTER_DEVICE = @"http://api.sigimera.org/v1/mpn.json";       //POST
+        //public const string URL_UNREGISTER_DEVICE = @"http://api.sigimera.org/v1/mpn/{0}";      //DELETE
+        public const string URL_UNREGISTER_DEVICE = @"http://api.sigimera.org/v1/mpn/{0}?auth_token={1}";      //DELETE
+        //public const string URL_UPDATE_DEVICE = @"http://api.sigimera.org/v1/mpn/{0}";          //PUT
+        public const string URL_UPDATE_DEVICE = @"http://api.sigimera.org/v1/mpn/{0}?auth_token={1}&lat={2}&lon={3}";          //PUT
             ///reg_uri
             ///device_name
             ///windows_api_level

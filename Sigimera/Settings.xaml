@@ -39,7 +39,7 @@
             <ScrollViewer Margin="0,0,0,69">
                 <StackPanel>
 
-                    <TextBlock Name="TextBlockError" Foreground="Red" TextWrapping="Wrap"></TextBlock>
+                    <TextBlock Name="TextBlockError" Style="{StaticResource PhoneTextAccentStyle}" TextWrapping="Wrap"></TextBlock>
                     
                     <TextBlock Text="Push Notification" Style="{StaticResource PhoneTextTitle2Style}"  />
                     <TextBlock Text="Push Notification in Windows Phone is only avaialble in form of Alerts. Each time an event occurs within 200 km of your location, a notification will be sent." Margin="10,10,0,10" TextWrapping="Wrap" />
