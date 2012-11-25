@@ -23,6 +23,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.Phone.Tasks;
+using Microsoft.Phone.Shell;
 
 namespace Sigimera
 {
@@ -286,7 +287,7 @@ namespace Sigimera
                 }
                 else
                 {
-                    var request = HttpWebRequest.Create(Shared.GENERATE_TOKEN_URL);
+                    var request = HttpWebRequest.Create(Shared.URL_GENERATE_TOKEN);
 
                     //Sigimera makes use of basic authentication
                     SetBasicAuthHeader(request, TextBoxUsername.Text, TextBoxPassword.Password);
@@ -294,12 +295,17 @@ namespace Sigimera
 
                     //var req = (IAsyncResult)request.BeginGetRequestStream(new AsyncCallback(GetRequestStreamCallback), request);
 
+                    SetLoginProcessing(true);
+                    TextBlockError.Text = "Authenticating...";
+
                     var result = (IAsyncResult)request.BeginGetResponse(new AsyncCallback(GetResponseCallback), request);
                 }
             }
             catch (Exception ex)
             {
                 TextBlockError.Text = "An error occurred. We apologize for inconvenience.";
+
+                SetLoginProcessing(false);
             }
         }
 
@@ -340,6 +346,7 @@ namespace Sigimera
                 Dispatcher.BeginInvoke(() =>
                 {
                     TextBlockError.Text = "An error occurred while requesting. We apologize for inconvenience.";
+                    SetLoginProcessing(false);
                 });
             }
         }
@@ -366,6 +373,8 @@ namespace Sigimera
 
                             //Store the token in App class reference so that it can now be used
                             App.USER_AUTH_TOKEN = authenticationToken.auth_token;
+
+                            ((ApplicationBarIconButton)ApplicationBar.Buttons[2]).IsEnabled = true;
 
                             //Clear text fields
                             TextBoxUsername.Text = string.Empty;
@@ -395,8 +404,11 @@ namespace Sigimera
                         TextBlockError.Text = "An error occurred while authorizing. We apologize for inconvenience.";
                     });
                 }
+                Dispatcher.BeginInvoke(() =>
+                {
+                    SetLoginProcessing(false);
+                });
             }
-
         }
 
         /// <summary>
@@ -409,11 +421,31 @@ namespace Sigimera
             {
                 StackPanelLogin.Visibility = System.Windows.Visibility.Collapsed;
                 StackPanelPostLogin.Visibility = System.Windows.Visibility.Visible;
+                ((ApplicationBarIconButton)ApplicationBar.Buttons[2]).IsEnabled = true;
             }
             else
             {
                 StackPanelLogin.Visibility = System.Windows.Visibility.Visible;
                 StackPanelPostLogin.Visibility = System.Windows.Visibility.Collapsed;
+                ((ApplicationBarIconButton)ApplicationBar.Buttons[2]).IsEnabled = false;
+            }
+        }
+
+        private void SetLoginProcessing(bool isProcessing)
+        {
+            if (isProcessing)
+            {
+                ButtonLogin.IsEnabled = false;
+                TextBoxUsername.IsEnabled = false;
+                TextBoxPassword.IsEnabled = false;
+                ProgressBarLogin.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                ButtonLogin.IsEnabled = true;
+                TextBoxUsername.IsEnabled = true;
+                TextBoxPassword.IsEnabled = true;
+                ProgressBarLogin.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
 
@@ -434,6 +466,8 @@ namespace Sigimera
                 //Post login
                 StackPanelLogin.Visibility = System.Windows.Visibility.Visible;
                 StackPanelPostLogin.Visibility = System.Windows.Visibility.Collapsed;
+
+                ((ApplicationBarIconButton)ApplicationBar.Buttons[2]).IsEnabled = false;
             }
             catch (Exception ex)
             {

@@ -26,6 +26,7 @@ namespace Sigimera
         private static CrisisViewModel crisisViewModel = null;
 
         public static string USER_AUTH_TOKEN = string.Empty;
+        public static string DEVICE_ID = string.Empty;
 
         /// <summary>
         /// A static ViewModel for sports used by the views to bind against.

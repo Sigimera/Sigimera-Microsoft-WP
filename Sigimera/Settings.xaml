@@ -29,7 +29,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <toolkit:PerformanceProgressBar Name="pgbProcessing" Visibility="Collapsed"></toolkit:PerformanceProgressBar>
+            <toolkit:PerformanceProgressBar Name="pgbProcessing" Visibility="Collapsed" IsIndeterminate="True"></toolkit:PerformanceProgressBar>
             <Image HorizontalAlignment="Left"  Width="150" Height="42" Source="/Sigimera;component/Images/logo.png" VerticalAlignment="Top"></Image>
             <TextBlock x:Name="PageTitle" Text="Settings" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
@@ -44,11 +44,11 @@
                     <TextBlock Text="Push Notification" Style="{StaticResource PhoneTextTitle2Style}"  />
                     <TextBlock Text="Push Notification in Windows Phone is only avaialble in form of Alerts. Each time an event occurs within 200 km of your location, a notification will be sent." Margin="10,10,0,10" TextWrapping="Wrap" />
 
-                    <toolkit:ToggleSwitch x:Name="ToggleSwitchRegisterUnregister" Header="Register/Unregister Device" IsChecked="False" Tap="ToggleSwitchRegisterUnregister_Tap"></toolkit:ToggleSwitch>
-                    
-                    <toolkit:ToggleSwitch x:Name="ToggleSwitchPushNotification" Header="Push Notification" IsChecked="False" Tap="ToggleSwitchPushNotification_Tap"></toolkit:ToggleSwitch>
+                    <toolkit:ToggleSwitch x:Name="ToggleSwitchRegisterUnregister" Header="Register/Unregister Device" IsChecked="False" Tap="ToggleSwitchRegisterUnregister_Tap" IsEnabled="False"></toolkit:ToggleSwitch>
 
-                    <Button Name="btnUpdateLocation" Content="Update Location"></Button>
+                    <toolkit:ToggleSwitch x:Name="ToggleSwitchPushNotification" Header="Push Notification" IsChecked="False" Tap="ToggleSwitchPushNotification_Tap" IsEnabled="False" Visibility="Collapsed"></toolkit:ToggleSwitch>
+
+                    <Button Name="btnUpdateLocation" Content="Update Location" IsEnabled="False" Click="btnUpdateLocation_Click"></Button>
 
                     <TextBlock Text="Data" Style="{StaticResource PhoneTextTitle2Style}"  />
                     <Button Name="btnClearData" Content="Clear data" Click="btnClearData_Click"></Button>

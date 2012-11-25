@@ -29,8 +29,6 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <toolkit:PerformanceProgressBar Name="pgbRequesting" Visibility="Collapsed"></toolkit:PerformanceProgressBar>
-            <!--<ProgressBar Name="pgbRequesting" Visibility="Collapsed"></ProgressBar>-->
             <Image HorizontalAlignment="Left"  Width="150" Height="42" Source="/Sigimera;component/Images/logo.png" VerticalAlignment="Top"></Image>
         </StackPanel>
 
@@ -41,18 +39,17 @@
                 <controls:PivotItem Header="Home" >
                     <StackPanel Name="StackPanelHome">
                         <StackPanel Name="StackPanelLogin" Visibility="Collapsed">
-                            <!--<ProgressBar Visibility="Collapsed" Name="ProgressBarLogin"></ProgressBar>-->
-                            <toolkit:PerformanceProgressBar Name="ProgressBarLogin" Visibility="Collapsed"></toolkit:PerformanceProgressBar>
+                            <toolkit:PerformanceProgressBar IsIndeterminate="True" Name="ProgressBarLogin" Visibility="Collapsed"></toolkit:PerformanceProgressBar>
                             <TextBlock Name="TextBlockError" Foreground="Red" TextWrapping="Wrap"></TextBlock>
                             <TextBlock Style="{StaticResource PhoneTextLargeStyle}">login</TextBlock>
                             <TextBlock Margin="10,10,0,0" Style="{StaticResource PhoneTextSmallStyle}" TextWrapping="Wrap">Welcome to the crises information system. Please login below</TextBlock>
                             <TextBlock TextWrapping="Wrap" Margin="10,40,0,0">Username:</TextBlock>
-                            <TextBox Name="TextBoxUsername" MaxLength="30"></TextBox>
+                            <TextBox Name="TextBoxUsername" MaxLength="30" Text="ahmed.usman@outlook.com"></TextBox>
                             <TextBlock TextWrapping="Wrap" Margin="10,40,0,0">Password:</TextBlock>
                             <PasswordBox Name="TextBoxPassword" MaxLength="30"></PasswordBox>
                             <Button Name="ButtonLogin" Width="150" HorizontalAlignment="Right" Click="ButtonLogin_Click">Login</Button>
                         </StackPanel>
-                        <StackPanel Name="StackPanelPostLogin"  Visibility="Visible">
+                        <StackPanel Name="StackPanelPostLogin"  Visibility="Collapsed">
                             <HyperlinkButton Name="HlinkLogout" Click="HlinkLogout_Click" HorizontalAlignment="Right">Logout</HyperlinkButton>
                             <toolkit:WrapPanel>
                                 <toolkit:HubTile Title="Nearby" Margin="20"></toolkit:HubTile>
@@ -66,19 +63,22 @@
                     </StackPanel>
                 </controls:PivotItem>
                 <controls:PivotItem Header="Crises">
-                    <ListBox x:Name="ListBoxLatestCrisis" ItemsSource="{Binding Items}" Tap="ListBoxLatestCrisis_Tap">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Margin="0,0,0,20">
-                                    <toolkit:WrapPanel>
-                                        <Image Width="40" Source="{Binding ImageUrl}" Height="40" VerticalAlignment="Top"></Image>
-                                        <TextBlock Text="{Binding dc_title}" VerticalAlignment="Top" TextTrimming="WordEllipsis" TextWrapping="NoWrap" Margin="10,0" Width="370" />
-                                        <TextBlock Text="{Binding dc_date}" Style="{StaticResource PhoneTextSmallStyle}" Margin="45,0,0,0"></TextBlock>
-                                    </toolkit:WrapPanel>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <StackPanel>
+                        <toolkit:PerformanceProgressBar IsIndeterminate="True" Name="pgbRequesting" Visibility="Collapsed"></toolkit:PerformanceProgressBar>
+                        <ListBox x:Name="ListBoxLatestCrisis" ItemsSource="{Binding Items}" Tap="ListBoxLatestCrisis_Tap" Height="500">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,0,0,20">
+                                        <toolkit:WrapPanel>
+                                            <Image Width="40" Source="{Binding ImageUrl}" Height="40" VerticalAlignment="Top"></Image>
+                                            <TextBlock Text="{Binding dc_title}" VerticalAlignment="Top" TextTrimming="WordEllipsis" TextWrapping="NoWrap" Margin="10,0" Width="370" />
+                                            <TextBlock Text="{Binding dc_date}" Style="{StaticResource PhoneTextSmallStyle}" Margin="45,0,0,0"></TextBlock>
+                                        </toolkit:WrapPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
                 </controls:PivotItem>
             </controls:Pivot>
         </Grid>
@@ -88,7 +88,7 @@
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True" Mode="Default">
             <shell:ApplicationBarIconButton IconUri="/Icons/dark/appbar.edit.rest.png" Text="review" Click="ApplicationBarIconButton_Click" />
             <shell:ApplicationBarIconButton IconUri="/Icons/dark/appbar.share.rest.png" Text="share" Click="ApplicationBarIconButton_Click_1" />
-            <shell:ApplicationBarIconButton IconUri="/Icons/dark/appbar.feature.settings.rest.png" Text="settings" Click="ApplicationBarIconButton_Click_2" />
+            <shell:ApplicationBarIconButton IconUri="/Icons/dark/appbar.feature.settings.rest.png" IsEnabled="False" Text="settings" Click="ApplicationBarIconButton_Click_2" />
             <shell:ApplicationBarIconButton IconUri="/Icons/dark/appbar.refresh.rest.png" Text="refresh" Click="ApplicationBarIconButton_Click_3" />
 
             <shell:ApplicationBar.MenuItems>
