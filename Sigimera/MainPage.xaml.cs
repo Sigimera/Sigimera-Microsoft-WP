@@ -87,7 +87,7 @@ namespace Sigimera
                     watcher.PositionChanged += new EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>(watcher_PositionChanged);
                     watcher.Start();
 
-                    LoadLatestCrisis();
+                    //LoadLatestCrisis();
 
                     AuthenticateUser();
                 }
@@ -272,14 +272,14 @@ namespace Sigimera
         {
             try
             {
-                if (string.IsNullOrEmpty(TextBoxUsername.Text) || string.IsNullOrEmpty(TextBoxPassword.Text))
+                if (string.IsNullOrEmpty(TextBoxUsername.Text) || string.IsNullOrEmpty(TextBoxPassword.Password))
                 {
                     TextBlockError.Text = "Please provide a username or password.";
                     if (string.IsNullOrEmpty(TextBoxUsername.Text))
                     {
                         TextBoxUsername.Focus();
                     }
-                    else if (string.IsNullOrEmpty(TextBoxPassword.Text))
+                    else if (string.IsNullOrEmpty(TextBoxPassword.Password))
                     {
                         TextBoxPassword.Focus();
                     }
@@ -287,9 +287,14 @@ namespace Sigimera
                 else
                 {
                     var request = HttpWebRequest.Create(Shared.GENERATE_TOKEN_URL);
+
+                    //Sigimera makes use of basic authentication
+                    SetBasicAuthHeader(request, TextBoxUsername.Text, TextBoxPassword.Password);
                     request.Method = "POST";
 
-                    var req = (IAsyncResult)request.BeginGetRequestStream(GetRequestStreamCallback, request);
+                    //var req = (IAsyncResult)request.BeginGetRequestStream(new AsyncCallback(GetRequestStreamCallback), request);
+
+                    var result = (IAsyncResult)request.BeginGetResponse(new AsyncCallback(GetResponseCallback), request);
                 }
             }
             catch (Exception ex)
@@ -298,12 +303,22 @@ namespace Sigimera
             }
         }
 
+        private void SetBasicAuthHeader(WebRequest request, String userName, String userPassword)
+        {
+            string authInfo = userName + ":" + userPassword;
+            authInfo = Convert.ToBase64String(Encoding.UTF8.GetBytes(authInfo));
+            request.Headers["Authorization"] = "Basic " + authInfo;
+        }
+
         private void GetRequestStreamCallback(IAsyncResult asynchronousResult)
         {
             try
             {
-
-                string credentials = string.Format("email={0}&password={1}", TextBoxUsername.Text, TextBoxPassword.Text);
+                string credentials = string.Empty;
+                Dispatcher.BeginInvoke(() =>
+                {
+                    credentials = string.Format("email={0}&password={1}", TextBoxUsername.Text, TextBoxPassword.Password);
+                });
 
                 HttpWebRequest request = (HttpWebRequest)asynchronousResult.AsyncState;
 
@@ -318,11 +333,14 @@ namespace Sigimera
                 postStream.Close();
 
                 // Start the asynchronous operation to get the response
-                var result = (IAsyncResult)request.BeginGetResponse(GetResponseCallback, request);
+                var result = (IAsyncResult)request.BeginGetResponse(new AsyncCallback(GetResponseCallback), request);
             }
             catch (Exception ex)
             {
-                TextBlockError.Text = "An error occurred while requesting. We apologize for inconvenience.";
+                Dispatcher.BeginInvoke(() =>
+                {
+                    TextBlockError.Text = "An error occurred while requesting. We apologize for inconvenience.";
+                });
             }
         }
 
@@ -344,19 +362,42 @@ namespace Sigimera
                         Dispatcher.BeginInvoke(() =>
                         {
                             //Store the token
-                            AppSettings.StoreSetting("AuthentToken", authenticationToken.auth_token);
+                            AppSettings.StoreSetting(Shared.SETTING_USER_AUTH_TOKEN, authenticationToken.auth_token);
+
+                            //Store the token in App class reference so that it can now be used
+                            App.USER_AUTH_TOKEN = authenticationToken.auth_token;
+
+                            //Clear text fields
+                            TextBoxUsername.Text = string.Empty;
+                            TextBoxPassword.Password = string.Empty;
+
+                            //Show the corresponding panels
+                            StackPanelLogin.Visibility = System.Windows.Visibility.Collapsed;
+                            StackPanelPostLogin.Visibility = System.Windows.Visibility.Visible;
                         });
                     }
                 }
             }
             catch (Exception ex)
             {
-                TextBlockError.Text = "An error occurred while authorizing. We apologize for inconvenience.";
+                if (ex.Message == "The remote server returned an error: NotFound.")
+                {
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        TextBlockError.Text = "Login failed. Please check your credentials and try again.";
+                        TextBoxUsername.Focus();
+                    });
+                }
+                else
+                {
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        TextBlockError.Text = "An error occurred while authorizing. We apologize for inconvenience.";
+                    });
+                }
             }
 
         }
-
-        #endregion
 
         /// <summary>
         /// This method authenticates user given that an authentication token exists in the database or no
@@ -364,7 +405,7 @@ namespace Sigimera
         private void AuthenticateUser()
         {
             //Try to read the token from isolated storage
-            if (AppSettings.TryGetSetting("AuthentToken", out Shared.USER_AUTH_TOKEN))
+            if (AppSettings.TryGetSetting(Shared.SETTING_USER_AUTH_TOKEN, out App.USER_AUTH_TOKEN))
             {
                 StackPanelLogin.Visibility = System.Windows.Visibility.Collapsed;
                 StackPanelPostLogin.Visibility = System.Windows.Visibility.Visible;
@@ -375,5 +416,31 @@ namespace Sigimera
                 StackPanelPostLogin.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
+
+        #endregion
+
+        #region | Logout |
+
+        private void HlinkLogout_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //Delete settings
+                AppSettings.DeleteSetting(Shared.SETTING_USER_AUTH_TOKEN);
+
+                //The token is no there
+                App.USER_AUTH_TOKEN = string.Empty;
+
+                //Post login
+                StackPanelLogin.Visibility = System.Windows.Visibility.Visible;
+                StackPanelPostLogin.Visibility = System.Windows.Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        #endregion
     }
 }

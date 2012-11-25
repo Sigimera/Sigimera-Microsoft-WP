@@ -29,6 +29,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <toolkit:PerformanceProgressBar Name="pgbProcessing" Visibility="Collapsed"></toolkit:PerformanceProgressBar>
             <Image HorizontalAlignment="Left"  Width="150" Height="42" Source="/Sigimera;component/Images/logo.png" VerticalAlignment="Top"></Image>
             <TextBlock x:Name="PageTitle" Text="Settings" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
@@ -38,37 +39,22 @@
             <ScrollViewer Margin="0,0,0,69">
                 <StackPanel>
 
-                    <TextBlock Text="Events Display Settings" Style="{StaticResource PhoneTextTitle2Style}"  />
+                    <TextBlock Name="TextBlockError" Foreground="Red" TextWrapping="Wrap"></TextBlock>
+                    
+                    <TextBlock Text="Push Notification" Style="{StaticResource PhoneTextTitle2Style}"  />
+                    <TextBlock Text="Push Notification in Windows Phone is only avaialble in form of Alerts. Each time an event occurs within 200 km of your location, a notification will be sent." Margin="10,10,0,10" TextWrapping="Wrap" />
 
-                    <toolkit:ListPicker Name="lstSortBy" Header="Sort By">
-                        <toolkit:ListPickerItem Name="DateTime" Content="DateTime"></toolkit:ListPickerItem>
-                        <toolkit:ListPickerItem Name="Magnitude" Content="Magnitude"></toolkit:ListPickerItem>
-                        <toolkit:ListPickerItem Name="Name" Content="Name"></toolkit:ListPickerItem>
-                    </toolkit:ListPicker>
-
-                    <toolkit:WrapPanel>
-                        <TextBlock Text="Earthquake Events Displayed" Style="{StaticResource PhoneTextSubtleStyle}"  />
-                        <TextBlock Name="txtNumberOfEarthquakeEvents" TextAlignment="Left" Text="{Binding Path=Value, ElementName=sldNumberOfEarthquakeEvetns}" Width="168"></TextBlock>
-                    </toolkit:WrapPanel>
-
-                    <Slider Name="sldNumberOfEarthquakeEvetns" LargeChange="5" SmallChange="1" Minimum="5" Maximum="50" Value="20"></Slider>
-                   
+                    <toolkit:ToggleSwitch x:Name="ToggleSwitchRegisterUnregister" Header="Register/Unregister Device" IsChecked="False" Tap="ToggleSwitchRegisterUnregister_Tap"></toolkit:ToggleSwitch>
+                    
                     <toolkit:ToggleSwitch x:Name="ToggleSwitchPushNotification" Header="Push Notification" IsChecked="False" Tap="ToggleSwitchPushNotification_Tap"></toolkit:ToggleSwitch>
 
-                    <ProgressBar Name="pgbDeleting" Visibility="Collapsed"></ProgressBar>
+                    <Button Name="btnUpdateLocation" Content="Update Location"></Button>
+
+                    <TextBlock Text="Data" Style="{StaticResource PhoneTextTitle2Style}"  />
                     <Button Name="btnClearData" Content="Clear data" Click="btnClearData_Click"></Button>
                 </StackPanel>
             </ScrollViewer>
         </Grid>
     </Grid>
-
-    <!--Sample code showing usage of ApplicationBar-->
-    <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" Mode="Default" Opacity="0.5">
-            <shell:ApplicationBarIconButton Click="ApplicationBarIconButton_Click_1" IconUri="/Icons/dark/appbar.check.rest.png" Text="Save" />
-            <shell:ApplicationBarIconButton Click="ApplicationBarIconButton_Click_2"  IconUri="/Icons/dark/appbar.refresh.rest.png" Text="Reset" />
-            <shell:ApplicationBarIconButton Click="ApplicationBarIconButton_Click"  IconUri="/Icons/dark/appbar.cancel.rest.png" Text="Cancel" />
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
 
 </phone:PhoneApplicationPage>

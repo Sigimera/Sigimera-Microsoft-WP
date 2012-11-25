@@ -29,7 +29,8 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <ProgressBar Name="pgbRequesting" Visibility="Collapsed"></ProgressBar>
+            <toolkit:PerformanceProgressBar Name="pgbRequesting" Visibility="Collapsed"></toolkit:PerformanceProgressBar>
+            <!--<ProgressBar Name="pgbRequesting" Visibility="Collapsed"></ProgressBar>-->
             <Image HorizontalAlignment="Left"  Width="150" Height="42" Source="/Sigimera;component/Images/logo.png" VerticalAlignment="Top"></Image>
         </StackPanel>
 
@@ -40,17 +41,19 @@
                 <controls:PivotItem Header="Home" >
                     <StackPanel Name="StackPanelHome">
                         <StackPanel Name="StackPanelLogin" Visibility="Collapsed">
-                            <ProgressBar Visibility="Collapsed" Name="ProgressBarLogin"></ProgressBar>
+                            <!--<ProgressBar Visibility="Collapsed" Name="ProgressBarLogin"></ProgressBar>-->
+                            <toolkit:PerformanceProgressBar Name="ProgressBarLogin" Visibility="Collapsed"></toolkit:PerformanceProgressBar>
                             <TextBlock Name="TextBlockError" Foreground="Red" TextWrapping="Wrap"></TextBlock>
                             <TextBlock Style="{StaticResource PhoneTextLargeStyle}">login</TextBlock>
                             <TextBlock Margin="10,10,0,0" Style="{StaticResource PhoneTextSmallStyle}" TextWrapping="Wrap">Welcome to the crises information system. Please login below</TextBlock>
                             <TextBlock TextWrapping="Wrap" Margin="10,40,0,0">Username:</TextBlock>
                             <TextBox Name="TextBoxUsername" MaxLength="30"></TextBox>
                             <TextBlock TextWrapping="Wrap" Margin="10,40,0,0">Password:</TextBlock>
-                            <TextBox Name="TextBoxPassword" MaxLength="30"></TextBox>
+                            <PasswordBox Name="TextBoxPassword" MaxLength="30"></PasswordBox>
                             <Button Name="ButtonLogin" Width="150" HorizontalAlignment="Right" Click="ButtonLogin_Click">Login</Button>
                         </StackPanel>
-                        <StackPanel Name="StackPanelPostLogin"  Visibility="Collapsed">
+                        <StackPanel Name="StackPanelPostLogin"  Visibility="Visible">
+                            <HyperlinkButton Name="HlinkLogout" Click="HlinkLogout_Click" HorizontalAlignment="Right">Logout</HyperlinkButton>
                             <toolkit:WrapPanel>
                                 <toolkit:HubTile Title="Nearby" Margin="20"></toolkit:HubTile>
                                 <toolkit:HubTile Title="Today" Margin="20"></toolkit:HubTile>

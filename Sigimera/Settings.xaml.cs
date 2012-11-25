@@ -15,12 +15,17 @@ using System.ComponentModel;
 using Microsoft.Phone.Shell;
 using System.Windows.Navigation;
 using SigimeraModel;
+using System.IO;
+using System.Text;
+using Microsoft.Phone.Info;
 
 namespace Sigimera
 {
     public partial class Settings : PhoneApplicationPage
     {
         BackgroundWorker bg = new BackgroundWorker();
+
+        #region | Constructor |
 
         public Settings()
         {
@@ -30,47 +35,9 @@ namespace Sigimera
 
         }
 
-        /// <summary>
-        /// Cancel
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ApplicationBarIconButton_Click(object sender, EventArgs e)
-        {
-            if (NavigationService.CanGoBack)
-            {
-                NavigationService.GoBack();
-            }
-        }
+        #endregion
 
-        /// <summary>
-        /// Save
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ApplicationBarIconButton_Click_1(object sender, EventArgs e)
-        {
-            try
-            {
-                //Number of Earthquake Events
-                AppSettings.StoreSetting("NumberOfEarthquakeEvents", txtNumberOfEarthquakeEvents.Text);
-
-                //Sort BY
-                AppSettings.StoreSetting("SortBy", lstSortBy.SelectedIndex.ToString());
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occured. We apologize for inconvenience.", "Error", MessageBoxButton.OK);
-            }
-            finally
-            {
-                if (NavigationService.CanGoBack)
-                {
-                    NavigationService.GoBack();
-                }
-            }
-        }
+        #region | Page Event [Load] |
 
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
@@ -79,21 +46,11 @@ namespace Sigimera
             //Number of Earthquake Events
             if (AppSettings.TryGetSetting<string>("NumberOfEarthquakeEvents", out value))
             {
-                sldNumberOfEarthquakeEvetns.Value = Convert.ToInt32(value);
+                //sldNumberOfEarthquakeEvetns.Value = Convert.ToInt32(value);
             }
             else
             {
-                sldNumberOfEarthquakeEvetns.Value = 20;
-            }
-
-            //Sort By
-            if (AppSettings.TryGetSetting<string>("SortBy", out value))
-            {
-                lstSortBy.SelectedIndex = Convert.ToInt32(value);
-            }
-            else
-            {
-                lstSortBy.SelectedIndex = 0;
+                //sldNumberOfEarthquakeEvetns.Value = 20;
             }
 
             object val;
@@ -108,52 +65,18 @@ namespace Sigimera
 
         }
 
-        //Set as default
-        private void ApplicationBarIconButton_Click_2(object sender, EventArgs e)
-        {
-            try
-            {
-                //Number of Earthquake Events to Retrieve
-                sldNumberOfEarthquakeEvetns.Value = 20;
+        #endregion
 
-                lstSortBy.SelectedIndex = 0;
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occured. We apologize for inconvenience.", "Error", MessageBoxButton.OK);
-            }
-        }
+        #region | Clear Data |
 
         private void btnClearData_Click(object sender, RoutedEventArgs e)
         {
-            if (App.IsTrial)
-            {
-                NavigationService.Navigate(new Uri("/BuyPage.xaml", UriKind.Relative));
-            }
-            else
-            {
-                LayoutRoot.IsHitTestVisible = false; // Restore mouse hit
+            LayoutRoot.IsHitTestVisible = false;
 
-                pgbDeleting.IsIndeterminate = true;
-                pgbDeleting.Visibility = System.Windows.Visibility.Visible;
+            pgbProcessing.IsIndeterminate = true;
+            pgbProcessing.Visibility = System.Windows.Visibility.Visible;
 
-                ((ApplicationBarIconButton)ApplicationBar.Buttons[0]).IsEnabled = false;
-                ((ApplicationBarIconButton)ApplicationBar.Buttons[1]).IsEnabled = false;
-                ((ApplicationBarIconButton)ApplicationBar.Buttons[2]).IsEnabled = false;
-
-                bg.RunWorkerAsync();
-            }
-        }
-
-        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
-        {
-            if (bg.IsBusy)
-            {
-                e.Cancel = true;                    // Cancel subsequent BackKey navigation
-                MessageBox.Show("Application is busy in clearing database. Please wait for a while.", "Information", MessageBoxButton.OK);
-            }
-            base.OnBackKeyPress(e); // Call base
+            bg.RunWorkerAsync();
         }
 
         void bg_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs args)
@@ -164,7 +87,7 @@ namespace Sigimera
             ((ApplicationBarIconButton)ApplicationBar.Buttons[1]).IsEnabled = true;
             ((ApplicationBarIconButton)ApplicationBar.Buttons[2]).IsEnabled = true;
 
-            pgbDeleting.Visibility = System.Windows.Visibility.Collapsed;
+            pgbProcessing.Visibility = System.Windows.Visibility.Collapsed;
 
             bg = null;
             bg = new BackgroundWorker();
@@ -177,6 +100,124 @@ namespace Sigimera
         {
             DataCommunication.ClearRecords();
         }
+
+        #endregion
+
+        #region | Back Button Handling |
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            if (bg.IsBusy)
+            {
+                e.Cancel = true;                    // Cancel subsequent BackKey navigation
+                MessageBox.Show("Application is busy in clearing database. Please wait for a while.", "Information", MessageBoxButton.OK);
+            }
+            base.OnBackKeyPress(e); // Call base
+        }
+
+        #endregion
+
+        #region | Register/Unregister |
+
+        private void ToggleSwitchRegisterUnregister_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (ToggleSwitchRegisterUnregister.IsChecked == true)
+            {
+                RegisterDevice();
+            }
+            else
+            {
+                UnregisterDevice();
+            }
+        }
+
+        private void RegisterDevice()
+        {
+            try
+            {
+                LayoutRoot.IsHitTestVisible = false;
+                var request = HttpWebRequest.Create(Shared.GENERATE_TOKEN_URL);
+                request.Method = "POST";
+
+                var req = (IAsyncResult)request.BeginGetRequestStream(new AsyncCallback(GetRequestStreamCallback), request);
+            }
+            catch (Exception ex)
+            {
+                TextBlockError.Text = "An error occurred. We apologize for inconvenience.";
+            }
+        }
+
+        private void GetRequestStreamCallback(IAsyncResult asynchronousResult)
+        {
+            try
+            {
+                string deviceName = string.Empty;
+                string reg_Uri = string.Empty;
+                object device;
+
+                if (DeviceExtendedProperties.TryGetValue("DeviceName", out device))
+                {
+                    deviceName = device.ToString();
+                }
+
+                string dataToPost = string.Empty;
+                dataToPost = string.Format("reg_uri={0}&device_name={1}&windows_api_level=7.5", reg_Uri, deviceName);
+
+                HttpWebRequest request = (HttpWebRequest)asynchronousResult.AsyncState;
+
+                // End the operation
+                Stream postStream = request.EndGetRequestStream(asynchronousResult);
+
+                // Convert the string into a byte array.
+                byte[] postBytes = Encoding.UTF8.GetBytes(dataToPost);
+
+                // Write to the request stream.
+                postStream.Write(postBytes, 0, postBytes.Length);
+                postStream.Close();
+
+                // Start the asynchronous operation to get the response
+                var result = (IAsyncResult)request.BeginGetResponse(new AsyncCallback(GetResponseCallback), request);
+            }
+            catch (Exception ex)
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    TextBlockError.Text = "An error occurred while requesting device registration. We apologize for inconvenience.";
+                });
+            }
+        }
+
+        private void GetResponseCallback(IAsyncResult result)
+        {
+            try
+            {
+                var request = (HttpWebRequest)result.AsyncState;
+                var response = request.EndGetResponse(result);
+
+                using (var stream = response.GetResponseStream())
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    TextBlockError.Text = "An error occurred while registering device. We apologize for inconvenience.";
+                });
+            }
+        }
+
+        private void UnregisterDevice()
+        {
+            LayoutRoot.IsHitTestVisible = false;
+        }
+
+        #endregion
+
+        #region | Push Notification |
 
         private void ToggleSwitchPushNotification_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -196,6 +237,10 @@ namespace Sigimera
                 MessageBox.Show("An error occurred. We apologize for inconvenience.", "Error", MessageBoxButton.OK);
             }
         }
+
+
+        #endregion
+
 
     }
 }

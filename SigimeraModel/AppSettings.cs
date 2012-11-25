@@ -43,5 +43,11 @@ namespace SigimeraModel
             value = default(TValue);
             return false;
         }
+
+        public static void DeleteSetting(string settingName)
+        {
+            Settings.Remove(settingName);
+        }
+
     }
 }
