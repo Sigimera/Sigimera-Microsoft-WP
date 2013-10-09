@@ -1,8 +1,0 @@
-C:\Users\asmapc\Documents\GitHub\Sigimera-Microsoft-WP\Sigimera\obj\Debug\Sigimera.csprojResolveAssemblyReference.cache
-C:\Users\asmapc\Documents\GitHub\Sigimera-Microsoft-WP\Sigimera\obj\Debug\App.g.cs
-C:\Users\asmapc\Documents\GitHub\Sigimera-Microsoft-WP\Sigimera\obj\Debug\AboutPage.g.cs
-C:\Users\asmapc\Documents\GitHub\Sigimera-Microsoft-WP\Sigimera\obj\Debug\DetailsPage.g.cs
-C:\Users\asmapc\Documents\GitHub\Sigimera-Microsoft-WP\Sigimera\obj\Debug\MainPage.g.cs
-C:\Users\asmapc\Documents\GitHub\Sigimera-Microsoft-WP\Sigimera\obj\Debug\MapPage.g.cs
-C:\Users\asmapc\Documents\GitHub\Sigimera-Microsoft-WP\Sigimera\obj\Debug\Settings.g.cs
-C:\Users\asmapc\Documents\GitHub\Sigimera-Microsoft-WP\Sigimera\obj\Debug\Sigimera.g.resources
