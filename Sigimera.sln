@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010 Express for Windows Phone
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigimera", "Sigimera\Sigimera.csproj", "{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SigimeraModel", "SigimeraModel\SigimeraModel.csproj", "{E348B03C-79EE-48DD-BBBA-8DB646C5C237}"
@@ -8,19 +8,39 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM = Debug|ARM
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|ARM = Release|ARM
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Debug|ARM.ActiveCfg = Debug|ARM
+		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Debug|ARM.Build.0 = Debug|ARM
+		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Debug|ARM.Deploy.0 = Debug|ARM
+		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Debug|x86.ActiveCfg = Debug|x86
+		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Debug|x86.Build.0 = Debug|x86
+		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Debug|x86.Deploy.0 = Debug|x86
 		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Release|ARM.ActiveCfg = Release|ARM
+		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Release|ARM.Build.0 = Release|ARM
+		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Release|ARM.Deploy.0 = Release|ARM
+		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Release|x86.ActiveCfg = Release|x86
+		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Release|x86.Build.0 = Release|x86
+		{C8E9D356-C6EC-4F00-B324-86CEE95F6B31}.Release|x86.Deploy.0 = Release|x86
 		{E348B03C-79EE-48DD-BBBA-8DB646C5C237}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E348B03C-79EE-48DD-BBBA-8DB646C5C237}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E348B03C-79EE-48DD-BBBA-8DB646C5C237}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{E348B03C-79EE-48DD-BBBA-8DB646C5C237}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{E348B03C-79EE-48DD-BBBA-8DB646C5C237}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E348B03C-79EE-48DD-BBBA-8DB646C5C237}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E348B03C-79EE-48DD-BBBA-8DB646C5C237}.Release|ARM.ActiveCfg = Release|Any CPU
+		{E348B03C-79EE-48DD-BBBA-8DB646C5C237}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

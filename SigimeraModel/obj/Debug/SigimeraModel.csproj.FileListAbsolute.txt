@@ -1,0 +1,5 @@
+C:\Users\asmapc\Documents\GitHub\Sigimera-Microsoft-WP\SigimeraModel\Bin\Debug\SigimeraModel.dll
+C:\Users\asmapc\Documents\GitHub\Sigimera-Microsoft-WP\SigimeraModel\Bin\Debug\SigimeraModel.pdb
+C:\Users\asmapc\Documents\GitHub\Sigimera-Microsoft-WP\SigimeraModel\obj\Debug\SigimeraModel.csprojResolveAssemblyReference.cache
+C:\Users\asmapc\Documents\GitHub\Sigimera-Microsoft-WP\SigimeraModel\obj\Debug\SigimeraModel.dll
+C:\Users\asmapc\Documents\GitHub\Sigimera-Microsoft-WP\SigimeraModel\obj\Debug\SigimeraModel.pdb
