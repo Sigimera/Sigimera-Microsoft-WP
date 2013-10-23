@@ -9,6 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+    xmlns:maps="clr-namespace:Microsoft.Phone.Maps.Controls;assembly=Microsoft.Phone.Maps"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="728"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -22,93 +23,129 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="17*"/>
+            <ColumnDefinition Width="447*"/>
+            <ColumnDefinition Width="16*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="42"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <Image HorizontalAlignment="Left"  Width="150" Height="42" Source="/Sigimera;component/Images/logo.png" VerticalAlignment="Top"></Image>
+        <StackPanel x:Name="TitlePanel" Grid.Row="1" Grid.Column="1" Height="54" VerticalAlignment="Bottom" Margin="0,0,0,656" Grid.RowSpan="2"  >
+            <Image HorizontalAlignment="Left"  Width="150" Height="51" Source="/Sigimera;component/Images/logo.png" VerticalAlignment="Top"></Image>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <controls:Pivot x:Name="PanoControl" HeaderTemplate="{StaticResource SmallPanoramaHeader}" Margin="0,-30,0,0">
+        <Grid x:Name="ContentPanel" Grid.Row="2"  Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="119*"/>
+                <RowDefinition Height="115*"/>
+                <RowDefinition Height="440*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <controls:Pivot x:Name="PanoControl" HorizontalAlignment="Left" HeaderTemplate="{StaticResource SmallPanoramaHeader}" Grid.RowSpan="3" Width="454" Margin="0,0,-7,0" >
                 <!--Pivot item one-->
-                <controls:PivotItem Header="Home" >
+                <controls:PivotItem Header="Home" HorizontalAlignment="Left"  Width="432" >
                     <StackPanel Name="StackPanelHome">
                         <StackPanel Name="StackPanelLogin" Visibility="Collapsed">
-                            <toolkit:PerformanceProgressBar IsIndeterminate="True" Name="ProgressBarLogin" Visibility="Collapsed"></toolkit:PerformanceProgressBar>
+                            <ProgressBar IsIndeterminate="True" Name="ProgressBarLogin" Visibility="Collapsed"></ProgressBar>
                             <TextBlock Name="TextBlockError" Foreground="Red" TextWrapping="Wrap"></TextBlock>
-                            <TextBlock Style="{StaticResource PhoneTextLargeStyle}">login</TextBlock>
-                            <TextBlock Margin="10,10,0,0" Style="{StaticResource PhoneTextSmallStyle}" TextWrapping="Wrap">Welcome to the crises information system. Please login below</TextBlock>
-                            <TextBlock TextWrapping="Wrap" Margin="10,40,0,0">Username:</TextBlock>
+                            <TextBlock Style="{StaticResource PhoneTextLargeStyle}">Login</TextBlock>
+                            <Line Height="10"></Line>
+                            <TextBlock Style="{StaticResource PhoneTextSmallStyle}" TextWrapping="Wrap">Welcome to the crises information system. Please login below</TextBlock>
+                            <Line Height="10"></Line>
+                            <TextBlock TextWrapping="Wrap" >Username:</TextBlock>
                             <TextBox Name="TextBoxUsername" MaxLength="30" Text="ahmed.usman@outlook.com"></TextBox>
-                            <TextBlock TextWrapping="Wrap" Margin="10,40,0,0">Password:</TextBlock>
+                            <TextBlock TextWrapping="Wrap" >Password:</TextBlock>
                             <PasswordBox Name="TextBoxPassword" MaxLength="30"></PasswordBox>
                             <Button Name="ButtonLogin" Width="150" HorizontalAlignment="Right" Click="ButtonLogin_Click">Login</Button>
                         </StackPanel>
-                        <StackPanel Name="StackPanelPostLogin"  Visibility="Visible">
-                            <HyperlinkButton Name="HlinkLogout" Click="HlinkLogout_Click" HorizontalAlignment="Right">Logout</HyperlinkButton>
-                            <toolkit:WrapPanel>
-                                <StackPanel Background="{StaticResource PhoneAccentBrush}" Width="195" Margin="10" Height="110">
-                                    <StackPanel Orientation="Horizontal" Height="110">
-                                        <Image HorizontalAlignment="Left" VerticalAlignment="Center" Width="48" Source="/Sigimera;component/Images/Home/about_icon.png" Height="48" Margin="10"></Image>
-                                        <TextBlock Text="{Binding NearestCrisis}" Margin="10" TextWrapping="Wrap" Width="110"></TextBlock>
+                        <StackPanel Name="StackPanelPostLogin"  Visibility="Visible" Height="570">
+                            <HyperlinkButton x:Name="HlinkLogout" Click="HlinkLogout_Click" HorizontalAlignment="Right" Content="Logout" Width="122"/>
+                            <Line Height="15"></Line>
+                            <Grid Grid.ColumnSpan="1" >
+                                <StackPanel Background="{StaticResource PhoneAccentBrush}" HorizontalAlignment="Left" Width="200"  Height="110">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="110"  Width="175">
+                                        <Image HorizontalAlignment="Left" VerticalAlignment="Center" Width="69" Source="/Sigimera;component/Images/Home/about_icon.png" Height="48" />
+                                        <TextBlock Text="{Binding first_crisis_at }" TextAlignment="Center" TextWrapping="Wrap" Width="100" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                                     </StackPanel>
                                 </StackPanel>
-                                <StackPanel Background="{StaticResource PhoneAccentBrush}" Width="195" Margin="10" Height="110">
-                                    <StackPanel Orientation="Horizontal" Height="110">
-                                        <Image HorizontalAlignment="Left" VerticalAlignment="Center" Width="48" Source="/Sigimera;component/Images/Home/today_small.png" Height="48" Margin="10"></Image>
-                                        <TextBlock Text="{Binding NearestCrisis}" Margin="10" TextWrapping="Wrap" Width="110"></TextBlock>
+                                <StackPanel  Background="{StaticResource PhoneAccentBrush}" HorizontalAlignment="Right" Width="200"  Height="110" >
+                                    <StackPanel Orientation="Horizontal" Height="110" Width="175" HorizontalAlignment="Center">
+                                        <Image HorizontalAlignment="Left" VerticalAlignment="Center" Width="70" Source="/Sigimera;component/Images/Home/today_small.png"  Height="48" />
+                                        <TextBlock Text="{Binding today_crises}" TextAlignment="Center"  TextWrapping="Wrap" Width="100"  VerticalAlignment="Center" HorizontalAlignment="Right" />
                                     </StackPanel>
                                 </StackPanel>
-                            </toolkit:WrapPanel>
-                            <toolkit:WrapPanel>
-                                <StackPanel Background="{StaticResource PhoneAccentBrush}" Width="195" Margin="10" Height="110">
-                                    <StackPanel Orientation="Horizontal" Height="110">
-                                        <Image HorizontalAlignment="Left" VerticalAlignment="Center" Width="48" Source="/Sigimera;component/Images/Home/latest_small.png" Height="48" Margin="10"></Image>
-                                        <TextBlock Text="{Binding NearestCrisis}" Margin="10" TextWrapping="Wrap" Width="110"></TextBlock>
+                            </Grid>
+                            <Line Height="23"></Line>
+                            <Grid Grid.ColumnSpan="1" Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Background="{StaticResource PhoneAccentBrush}" Width="200" HorizontalAlignment="Left" >
+                                    <StackPanel Orientation="Horizontal" Height="110" Width="175" >
+                                        <Image HorizontalAlignment="Left" VerticalAlignment="Center" Width="65" Source="/Sigimera;component/Images/Home/latest_small.png" Height="48" />
+                                        <TextBlock Text="{Binding latest_crisis_at }" TextWrapping="Wrap" Width="113" TextAlignment="Center"  HorizontalAlignment="Right" VerticalAlignment="Center" />
                                     </StackPanel>
                                 </StackPanel>
-                                <StackPanel Background="{StaticResource PhoneAccentBrush}" Width="195" Margin="10" Height="110">
-                                    <StackPanel Orientation="Horizontal" Height="110">
-                                        <Image HorizontalAlignment="Left" VerticalAlignment="Center" Width="48" Source="/Sigimera;component/Images/Home/all_small.png" Height="48" Margin="10"></Image>
-                                        <TextBlock Text="{Binding NearestCrisis}" Margin="10" TextWrapping="Wrap" Width="110"></TextBlock>
+
+                                <StackPanel VerticalAlignment="Bottom" Height="110">
+                                    <StackPanel Background="{StaticResource PhoneAccentBrush}" Width="200"  Height="110" HorizontalAlignment="Right">
+                                        <StackPanel Orientation="Horizontal" Height="110" Width="175">
+                                            <Image HorizontalAlignment="Left" VerticalAlignment="Center" Width="69" Source="/Sigimera;component/Images/Home/all_small.png" Height="48" />
+                                            <TextBlock Text="{Binding total_crises }"  TextWrapping="Wrap" Width="100" TextAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                        </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
-                            </toolkit:WrapPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                            </Grid>
+                            <Line Height="10"></Line>
+                            <StackPanel Orientation="Horizontal" >
                                 <StackPanel Width="100">
-                                    <TextBlock Margin="10">italy</TextBlock>
-                                    <TextBlock Style="{StaticResource PhoneTextSmallStyle}">country</TextBlock>
+                                    <TextBlock Name="TextBlockCountry" TextAlignment="Left" >
+                                    </TextBlock>
+                                    <TextBlock TextAlignment="Left" Margin="0" Style="{StaticResource PhoneTextSmallStyle}">
+                                    	<Run Text="Country"/>
+                                    </TextBlock>
                                 </StackPanel>
                                 <StackPanel Width="200">
-                                    <TextBlock Margin="10">24442</TextBlock>
-                                    <TextBlock Style="{StaticResource PhoneTextSmallStyle}">Affected people</TextBlock>
+                                    <TextBlock Name="TextBlockAlertLevel" HorizontalAlignment="Center" TextAlignment="Center" >
+                                    </TextBlock>
+                                    <TextBlock HorizontalAlignment="Center" TextAlignment="Center"  Style="{StaticResource PhoneTextSmallStyle}" Width="200" >
+                        				<Run Text="Alert Level"/>
+                                    </TextBlock>
                                 </StackPanel>
-                                <StackPanel>
-                                    <TextBlock Margin="10">6.2</TextBlock>
-                                    <TextBlock Style="{StaticResource PhoneTextSmallStyle}">Magnitude</TextBlock>
+                                <StackPanel Width="130" HorizontalAlignment="Right">
+                                    <TextBlock Name="TextBlockSubject" TextAlignment="Right" >
+                                    </TextBlock>
+                                    <TextBlock Style="{StaticResource PhoneTextSmallStyle}" HorizontalAlignment="Right" Width="130" Margin="0" TextAlignment="Right" >
+                                    	<Run  Text="Subject"/>
+                                    </TextBlock>
                                 </StackPanel>
                             </StackPanel>
-                            <my:Map Height="200" HorizontalAlignment="Left" Name="map1" VerticalAlignment="Top" Width="450" CredentialsProvider="Aqn27uaJTGK2Xs8aDTSIWBCKlShjvXM8cgDfVnahbrVs1SrxcIMfffK68XKKTqYP" />
+                            <Line Height="10"></Line>
+                            <maps:Map Name="sampleMap" Height="221" HorizontalAlignment="Left"  Loaded="sampleMap_Loaded" VerticalAlignment="Top" Width="429" >
+                            </maps:Map>
                         </StackPanel>
                     </StackPanel>
                 </controls:PivotItem>
                 <controls:PivotItem Header="Crises">
                     <StackPanel>
-                        <toolkit:PerformanceProgressBar IsIndeterminate="True" Name="pgbRequesting" Visibility="Collapsed"></toolkit:PerformanceProgressBar>
+                        <ProgressBar IsIndeterminate="True" Name="pgbRequesting" Visibility="Collapsed"></ProgressBar>
                         <ListBox x:Name="ListBoxLatestCrisis" ItemsSource="{Binding Items}" Tap="ListBoxLatestCrisis_Tap" Height="500">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Margin="0,0,0,20">
-                                        <toolkit:WrapPanel>
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Height="70">
                                             <Image Width="40" Source="{Binding ImageUrl}" Height="40" VerticalAlignment="Top"></Image>
-                                            <TextBlock Text="{Binding dc_title}" VerticalAlignment="Top" TextTrimming="WordEllipsis" TextWrapping="NoWrap" Margin="10,0" Width="370" />
-                                            <TextBlock Text="{Binding dc_date}" Style="{StaticResource PhoneTextSmallStyle}" Margin="45,0,0,0"></TextBlock>
-                                        </toolkit:WrapPanel>
+                                            <TextBlock Text="{Binding dc_title}" VerticalAlignment="Top" TextTrimming="WordEllipsis" TextWrapping="NoWrap" Width="370" />
+                                            <TextBlock Text="{Binding dc_date}" Style="{StaticResource PhoneTextSmallStyle}"></TextBlock>
+                                        </StackPanel>
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -121,14 +158,16 @@
 
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True" Mode="Default">
-            <shell:ApplicationBarIconButton IconUri="/Icons/dark/appbar.edit.rest.png" Text="review" Click="ApplicationBarIconButton_Click" />
-            <shell:ApplicationBarIconButton IconUri="/Icons/dark/appbar.share.rest.png" Text="share" Click="ApplicationBarIconButton_Click_1" />
+            <shell:ApplicationBarIconButton IconUri="/Icons/dark/appbar.message.smiley.png" Text="sms" Click="ApplicationBarIconButton_Click" />
+            <shell:ApplicationBarIconButton IconUri="/Icons/dark/appbar.share.png" Text="share" Click="ApplicationBarIconButton_Click_1" />
             <shell:ApplicationBarIconButton IconUri="/Icons/dark/appbar.feature.settings.rest.png" IsEnabled="False" Text="settings" Click="ApplicationBarIconButton_Click_2" />
-            <shell:ApplicationBarIconButton IconUri="/Icons/dark/appbar.refresh.rest.png" Text="refresh" Click="ApplicationBarIconButton_Click_3" />
+            <shell:ApplicationBarIconButton IconUri="/Icons/dark/appbar.feature.email.rest.png" Text="email" Click="ApplicationBarIconButton_Click_3" />
 
             <shell:ApplicationBar.MenuItems>
                 <!--<shell:ApplicationBarMenuItem Text="Buy" Click="ApplicationBarMenuItem_Click_2" />-->
                 <shell:ApplicationBarMenuItem Text="About" Click="ApplicationBarMenuItem_Click" />
+                <shell:ApplicationBarMenuItem Text="Rate and Review" Click="ApplicationBarMenuItem_Click_2" />
+                <shell:ApplicationBarMenuItem Text="Refresh" Click="ApplicationBarMenuItem_Click_3" />
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>

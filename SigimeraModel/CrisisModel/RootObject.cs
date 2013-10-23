@@ -84,7 +84,7 @@ namespace SigimeraModel.CrisisModel
                 }
             }
         }
-
+        
         private string _subject;
         [Column(CanBeNull = false)]
         public string subject
@@ -226,7 +226,6 @@ namespace SigimeraModel.CrisisModel
                 }
             }
         }
-
         private string _schema_startDate;
         [Column(CanBeNull = true)]
         public string schema_startDate

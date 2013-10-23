@@ -25,6 +25,11 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Phone.Tasks;
 using Microsoft.Phone.Shell;
 
+using Microsoft.Phone.Maps.Toolkit;
+using Sigimera;
+using Microsoft.Phone.Maps.Controls;
+using Microsoft.Phone.Maps;
+
 namespace Sigimera
 {
     public partial class MainPage : PhoneApplicationPage
@@ -32,8 +37,22 @@ namespace Sigimera
         #region | Variables |
 
         bool successfullyLoaded = false;
+        int counter=0;
+        double shortest_distance;
+        double latitude2 = 0.0;
+        double latitude1;
+        double distance;
+        double longitude2 = 0.0;
+        double temp_latitude;
+        double temp_longitude;
+        int set_shortest_distance = 0;
+        double map_latitude, map_longitude;
+        string map_alertlevel;
+        DateTime map_datetime;
+        string format_string = "yyyy-MM-dd'T'HH:mm:ss'Z'";
         GeoCoordinateWatcher watcher;
-
+        Pushpin pin;
+        int crisis_count=0;
         #endregion
 
         #region | Properties |
@@ -47,9 +66,7 @@ namespace Sigimera
         public MainPage()
         {
             InitializeComponent();
-
             TiltEffect.SetIsTiltEnabled(this, true);
-
             using (SigimeraDataContext context = new SigimeraDataContext(Shared.CONNECTION_STRING))
             {
                 if (context.DatabaseExists())
@@ -62,14 +79,13 @@ namespace Sigimera
                     context.CreateDatabase();
 
                     successfullyLoaded = true;
-                }
+                }              
             }
-
-            DataContext = App.CrisisViewModel;
-
             // Set the data context of the listbox control to the sample data
+            this.DataContext = App.CrisisViewModel;
             this.Loaded += new RoutedEventHandler(MainPage_Loaded);
-
+            
+            
         }
 
         void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -88,9 +104,11 @@ namespace Sigimera
                     watcher.PositionChanged += new EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>(watcher_PositionChanged);
                     watcher.Start();
 
+                    
                     LoadLatestCrisis();
-
                     AuthenticateUser();
+                    App.CrisisViewModel.LoadTileData();
+                    LoadMap();
                 }
                 else
                 {
@@ -127,7 +145,167 @@ namespace Sigimera
         }
 
         #region | Methods [private] |
+        private void EarthquakeResponseRecieved(object sender, DownloadStringCompletedEventArgs e)
+        {
+            try
+            {
+                if (e.Result != null)
+                {
+                    GeoCoordinateWatcher watcher = new GeoCoordinateWatcher();
+                    watcher.TryStart(false, TimeSpan.FromMilliseconds(10));
+                    GeoCoordinate coord = watcher.Position.Location;
+                    List<RootObject> listRootObjects = JsonConvert.DeserializeObject<List<RootObject>>(e.Result);
+                    foreach (RootObject crisisItem in listRootObjects)
+                    {
 
+                        App.coordinates[0, crisis_count] = crisisItem.foaf_based_near[1];
+                        App.coordinates[1, crisis_count] = crisisItem.foaf_based_near[0];
+                        crisis_count++;
+                        if (!DataCommunication.CrisisExists(crisisItem._id))
+                        {
+                            DataCommunication.AddCrisis(crisisItem);
+                        }
+                        if (counter == 0)
+                        {
+                            TextBlockCountry.Text = crisisItem.gn_parentCountry[0];
+                            TextBlockAlertLevel.Text = crisisItem.crisis_alertLevel;
+                            TextBlockSubject.Text = crisisItem.subject;
+                            map_alertlevel = crisisItem.crisis_alertLevel;
+                            map_longitude = crisisItem.foaf_based_near[0];
+                            map_latitude = crisisItem.foaf_based_near[1];
+                            map_datetime = DateTime.ParseExact(crisisItem.dc_date, format_string, null);
+
+                            counter = 1;
+                        }
+                        if (coord.IsUnknown != true)
+                        {
+                            latitude2 = coord.Latitude;
+                            longitude2 = coord.Longitude;
+                                var R = 6372.8; // In kilometers
+                                temp_latitude = crisisItem.foaf_based_near[1];
+                                temp_longitude = crisisItem.foaf_based_near[0];
+                                var dLat = toRadians(latitude2 - temp_latitude);
+                                var dLon = toRadians(longitude2 - temp_longitude);
+                                latitude1 = toRadians(temp_latitude);
+                                latitude2 = toRadians(latitude2);
+
+                                var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) + Math.Sin(dLon / 2) * Math.Sin(dLon / 2) * Math.Cos(latitude1) * Math.Cos(latitude2);
+                                var c = 2 * Math.Asin(Math.Sqrt(a));
+                                distance = R * 2 * Math.Asin(Math.Sqrt(a));
+                                if (distance < 0.0)
+                                {
+                                    distance = -(distance);
+                                }
+                                if (set_shortest_distance == 0)
+                                {
+                                    if (distance != 0)
+                                    {
+                                        shortest_distance = distance;
+                                        set_shortest_distance = 1;
+                                    }
+                                }
+                                else if (distance !=0)
+                                {
+                                    if(distance<shortest_distance)
+                                    {
+                                        shortest_distance = distance;
+                                    }
+                                    
+                                }
+
+                            }
+                        if (shortest_distance <= 10000)
+                        {
+                            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                            sb.Append(Convert.ToInt32(shortest_distance)).Append(" km\nNear Crisis");
+                            App.CrisisViewModel.first_crisis_at = sb.ToString();
+                        }
+                        else
+                        {
+                            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                            sb.Append("no\n").Append("Nearest Crisis");
+                            App.CrisisViewModel.first_crisis_at = sb.ToString();
+                        }
+                    }
+                    
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                //Do Nothing
+            }
+            finally
+            {
+                pgbRequesting.Visibility = System.Windows.Visibility.Collapsed;
+                //Explicitly load data again from local database
+                App.CrisisViewModel.LoadCrisis(10);
+            }
+        }
+        private void LoadMap()
+        {
+            try
+            {
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            sb.Append("Date: ").Append(map_datetime.ToString());
+            sampleMap.Center = new GeoCoordinate(map_latitude, map_longitude);
+            if (map_alertlevel == "Green")
+            {
+                    pin = new Pushpin
+                    {
+                        GeoCoordinate = new GeoCoordinate(map_latitude,map_longitude),
+                        Background= new SolidColorBrush(Colors.Green),
+                        Content = sb.ToString(),
+                        Foreground= new SolidColorBrush(Colors.Black)
+                    };
+                }
+                else if (map_alertlevel == "Orange")
+                {
+                    pin = new Pushpin
+                    {
+                        GeoCoordinate = new GeoCoordinate(map_latitude, map_longitude),
+                        Background = new SolidColorBrush(Colors.Orange),
+                        Content = sb.ToString(),
+                        Foreground = new SolidColorBrush(Colors.Black)
+                    };
+                }
+                else if(map_alertlevel=="Red")
+                {
+                   pin = new Pushpin
+                    {
+                        GeoCoordinate = new GeoCoordinate(map_latitude, map_longitude),
+                        Background = new SolidColorBrush(Colors.Red),
+                        Content = sb.ToString(),
+                        Foreground = new SolidColorBrush(Colors.Black)
+                    };
+
+
+                }
+                MapOverlay overlay = new MapOverlay
+                {
+                    GeoCoordinate = new GeoCoordinate(map_latitude, map_longitude),
+                    Content = new Ellipse
+                    {
+                        Fill = new SolidColorBrush(Colors.Red),
+                        Width = 40,
+                        Height = 40
+                    }
+                };
+
+
+                overlay.Content = pin;
+                MapLayer layer = new MapLayer();
+                layer.Add(overlay);
+                sampleMap.Layers.Add(layer);
+
+
+            }
+            catch(Exception e)
+            {
+               
+            }
+        }
+            
         private void FetchAndShowLatestEarthquakeEvents()
         {
             try
@@ -146,48 +324,28 @@ namespace Sigimera
                 MessageBox.Show("An error occured while requesting.", "Error", MessageBoxButton.OK);
             }
         }
-
-        private void EarthquakeResponseRecieved(object sender, DownloadStringCompletedEventArgs e)
-        {
-            try
-            {
-                if (e.Result != null)
-                {
-                    List<RootObject> listRootObjects = JsonConvert.DeserializeObject<List<RootObject>>(e.Result);
-
-                    foreach (RootObject crisisItem in listRootObjects)
-                    {
-                        if (!DataCommunication.CrisisExists(crisisItem._id))
-                        {
-                            DataCommunication.AddCrisis(crisisItem);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                //Do Nothing
-            }
-            finally
-            {
-                pgbRequesting.Visibility = System.Windows.Visibility.Collapsed;
-                //Explicitly load data again from local database
-                App.CrisisViewModel.LoadCrisis(10);
-            }
-        }
-
         private void LoadLatestCrisis()
         {
             if (!App.CrisisViewModel.IsDataLoaded)
             {
                 App.CrisisViewModel.LoadCrisis(10);
             }
-
             //If no item could be found in database load from server
             if (App.CrisisViewModel.Items.Count == 0)
             {
                 FetchAndShowLatestEarthquakeEvents();
             }
+             
+        }
+        private void sampleMap_Loaded(object sender, RoutedEventArgs e)
+        {
+            MapsSettings.ApplicationContext.ApplicationId = "<applicationid>";
+            MapsSettings.ApplicationContext.AuthenticationToken = "<authenticationtoken>";
+        }  
+
+        public static double toRadians(double angle)
+        {
+            return Math.PI * angle / 180.0;
         }
 
         #endregion
@@ -209,30 +367,39 @@ namespace Sigimera
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ApplicationBarMenuItem_Click_2(object sender, EventArgs e)
-        {
-            MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
-            marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
-            //marketplaceDetailTask.ContentIdentifier = "";
-            marketplaceDetailTask.Show();
-        }
 
         /// <summary>
         /// Review
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ApplicationBarIconButton_Click(object sender, EventArgs e)
+        private void ApplicationBarMenuItem_Click_2(object sender, EventArgs e)
         {
             MarketplaceReviewTask review = new MarketplaceReviewTask();
             review.Show();
         }
 
-        /// <summary>
-        /// Share
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        private void ApplicationBarIconButton_Click(object sender, EventArgs e)
+        {
+            if (ListBoxLatestCrisis.SelectedItem != null)
+            {
+                RootObject rootObject = (RootObject)ListBoxLatestCrisis.SelectedItem;
+                System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                sb.Append("Sigimera Crisis Details").Append("\n");
+                sb.Append(rootObject.dc_description).Append("\n");
+                SmsComposeTask smsComposeTask = new SmsComposeTask();
+                smsComposeTask.To = "";
+                smsComposeTask.Body = sb.ToString();
+                smsComposeTask.Show();
+            }
+            else
+            {
+                SmsComposeTask smsComposeTask = new SmsComposeTask();
+                smsComposeTask.To = "";
+                smsComposeTask.Body = "Download Sigimera for Windows Phone 8 to get crisis alerts";
+                smsComposeTask.Show();
+            }
+        }
         private void ApplicationBarIconButton_Click_1(object sender, EventArgs e)
         {
             if (ListBoxLatestCrisis.SelectedItem != null)
@@ -242,29 +409,50 @@ namespace Sigimera
                 shareStatusTask.Status = rootObject.dc_description;
                 shareStatusTask.Show();
             }
+            else
+            {
+                ShareStatusTask shareStatusTask = new ShareStatusTask();
+                shareStatusTask.Status = "Download Sigimera for Windows Phone 8 to get crisis alerts";
+                shareStatusTask.Show();
+            }
         }
 
-        /// <summary>
-        /// Settings
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+       
         private void ApplicationBarIconButton_Click_2(object sender, EventArgs e)
         {
             NavigationService.Navigate(new Uri("/Settings.xaml", UriKind.Relative));
         }
 
-        /// <summary>
-        /// Refresh
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ApplicationBarIconButton_Click_3(object sender, EventArgs e)
+       
+        private void ApplicationBarMenuItem_Click_3(object sender, EventArgs e)
         {
             //Call to fetch any new events and then re-bind the list
             FetchAndShowLatestEarthquakeEvents();
+            App.CrisisViewModel.LoadTileData();
+            LoadMap();
         }
 
+        private void ApplicationBarIconButton_Click_3(object sender, EventArgs e)
+        {
+            if (ListBoxLatestCrisis.SelectedItem != null)
+            {
+                RootObject rootObject = (RootObject)ListBoxLatestCrisis.SelectedItem;
+                
+                EmailComposeTask emailComposeTask = new EmailComposeTask();
+                emailComposeTask.To = "Enter email";
+                emailComposeTask.Subject = "Sigimera crisis details";
+                emailComposeTask.Body = rootObject.dc_description;
+                emailComposeTask.Show();
+            }
+            else
+            {
+                EmailComposeTask emailComposeTask = new EmailComposeTask();
+                emailComposeTask.To = "Enter email";
+                emailComposeTask.Subject = "Sigimera";
+                emailComposeTask.Body = "Download Sigimera for Windows Phone 8 to get crisis alerts";
+                emailComposeTask.Show();
+            }
+        }
         #endregion
 
         #region | Authentication |
@@ -382,6 +570,7 @@ namespace Sigimera
         private void AuthenticateUser()
         {
             //Try to read the token from isolated storage
+            
             if (AppSettings.TryGetSetting(Shared.SETTING_USER_AUTH_TOKEN, out App.USER_AUTH_TOKEN))
             {
                 StackPanelLogin.Visibility = System.Windows.Visibility.Collapsed;
@@ -431,6 +620,12 @@ namespace Sigimera
                 //Post login
                 StackPanelLogin.Visibility = System.Windows.Visibility.Visible;
                 StackPanelPostLogin.Visibility = System.Windows.Visibility.Collapsed;
+                ProgressBarLogin.Visibility = System.Windows.Visibility.Collapsed;
+                this.TextBoxUsername.IsEnabled = true;
+                this.TextBoxPassword.IsEnabled = true;
+                this.TextBlockError.Text = " ";
+                this.ButtonLogin.IsEnabled = true;
+
 
                 ((ApplicationBarIconButton)ApplicationBar.Buttons[2]).IsEnabled = false;
             }

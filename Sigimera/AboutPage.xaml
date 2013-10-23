@@ -16,67 +16,57 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="29*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="19"/>
+            <RowDefinition Height="133"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <Image HorizontalAlignment="Left"  Width="150" Height="42" Source="/Sigimera;component/Images/logo.png" VerticalAlignment="Top"></Image>
-            <TextBlock x:Name="PageTitle" Text="About" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" />
+        <StackPanel x:Name="TitlePanel" Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" >
+            <Image HorizontalAlignment="Left"  Width="150" Height="42" Source="/Sigimera;component/Images/logo.png" VerticalAlignment="Top"/>
+            <TextBlock   x:Name="PageTitle" Text="About"  Style="{StaticResource PhoneTextTitle1Style}" Height="81" />
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+        <Grid x:Name="ContentPanel" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left"  Width="460">
             <StackPanel>
-                <Grid Height="550">
+                <Grid Height="550" >
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="50" />
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="100" />
-                        <RowDefinition Height="30" />
+                        <RowDefinition Height="122" />
+                        <RowDefinition Height="Auto" MinHeight="23" />
+                        <RowDefinition Height="37" />
+                        <RowDefinition Height="33" />
+                        <RowDefinition Height="38" />
+                        <RowDefinition Height="44" />
+                        <RowDefinition Height="32" />
+                        <RowDefinition Height="39" />
+                        <RowDefinition Height="39" />
+                        <RowDefinition Height="32" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Width="456" Margin="0,0,0,0">
-                        Crises Information Platform
+                    <TextBlock Grid.Row="0" TextWrapping="Wrap"   Text="Get latest and past natural disasters (crises) from official source and other users. Receive push notifications whenever a crisis occurs in a radius of 200 km around you."  />
+
+                    <TextBlock Grid.Row="2"  TextWrapping="Wrap"   Text="Visit our REST API page documentation:"  />
+
+                    <TextBlock Grid.Row="3" TextAlignment="Center" TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Text="https://api.sigimera.org/" Tap="Link_Tap1" />
+
+                    <TextBlock Grid.Row="4" TextWrapping="Wrap"   >
+                    	<Run Text="Visit our website:"/>
+                    	<LineBreak/>
+                    	<Run Text=""/>
                     </TextBlock>
 
-                    <TextBlock Grid.Row="2" TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Width="456" Margin="0,0,0,0">
+                    <TextBlock Grid.Row="5" TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}"  Text="http://crises.sigimera.org/" TextAlignment="Center" Tap="Link_Tap2" />
 
-                    </TextBlock>
+                    <TextBlock Grid.Row="7" TextWrapping="Wrap" Foreground="{StaticResource PhoneAccentBrush}"  Text="Developed By:"  />
 
-                    <TextBlock Grid.Row="4" TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Width="456" Margin="0,0,0,0">
-                        -
-                    </TextBlock>
-
-                    <TextBlock Grid.Row="5" TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Width="456" Margin="0,0,0,0">
-                        -
-                    </TextBlock>
-
-                    <TextBlock Grid.Row="6" TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Width="456" Margin="0,0,0,0">
-                        -
-                    </TextBlock>
-
-                    <TextBlock Grid.Row="7" TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Width="456" Margin="0,0,0,0">
-                        -
-                    </TextBlock>
-
-                    <TextBlock Grid.Row="8" TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Width="456" Margin="0,0,0,0">
-                        -
-                    </TextBlock>
-
-                    <TextBlock Grid.Row="9" TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Width="456" Margin="0,0,0,0">
-                        -
-                    </TextBlock>
+                    <TextBlock Grid.Row="8" TextWrapping="Wrap" Foreground="{StaticResource PhoneAccentBrush}"  Text="Publish Date: November 2013"  />
+                    <TextBlock Grid.Row="9" TextWrapping="Wrap" Foreground="{StaticResource PhoneAccentBrush}"  Text="Version: 1.0"    />
 
                 </Grid>
             </StackPanel>
@@ -85,7 +75,7 @@
 
     <!--Sample code showing usage of ApplicationBar-->
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" Mode="Default" Opacity="0.5">
+        <shell:ApplicationBar IsVisible="True" Mode="Default">
             <shell:ApplicationBarIconButton Click="ApplicationBarIconButton_Click" IconUri="/Icons/dark/appbar.back.rest.png" Text="Back" />
             <shell:ApplicationBarIconButton Click="ApplicationBarIconButton_Click_1" IconUri="/Icons/dark/appbar.feature.email.rest.png" Text="Email" />
         </shell:ApplicationBar>

@@ -12,6 +12,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using System.Device.Location;
 
 namespace Sigimera
 {
@@ -27,7 +28,13 @@ namespace Sigimera
 
         public static string USER_AUTH_TOKEN = string.Empty;
         public static string DEVICE_ID = string.Empty;
-
+        public static double latitude=0.0;
+        public static double longitude = 0.0;
+        public static string place;
+        public static string subject;
+        public static string dateTime;
+        public static string alert_level;
+        public static double [,]coordinates= new double[2,10];
         /// <summary>
         /// A static ViewModel for sports used by the views to bind against.
         /// </summary>
@@ -37,8 +44,10 @@ namespace Sigimera
             get
             {
                 if (crisisViewModel == null)
+                {
                     crisisViewModel = new CrisisViewModel();
-
+                    
+                }
                 return crisisViewModel;
             }
         }
@@ -91,6 +100,7 @@ namespace Sigimera
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
             DetermineIsTrail();
+           
         }
 
         // Code to execute when the application is deactivated (sent to background)

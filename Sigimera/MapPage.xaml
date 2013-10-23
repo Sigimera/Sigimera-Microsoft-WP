@@ -6,29 +6,56 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:maps="clr-namespace:Microsoft.Phone.Maps.Controls;assembly=Microsoft.Phone.Maps"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Maps.Toolkit;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="False" xmlns:my="clr-namespace:Microsoft.Phone.Controls.Maps;assembly=Microsoft.Phone.Controls.Maps">
+    shell:SystemTray.IsVisible="False" >
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="13*"/>
+            <ColumnDefinition Width="450*"/>
+            <ColumnDefinition Width="17*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="88"/>
+            <RowDefinition Height="537*"/>
+            
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+        <StackPanel x:Name="TitlePanel" Grid.Row="1"  Grid.Column="1" Grid.ColumnSpan="2">
             <Image HorizontalAlignment="Left"  Width="150" Height="42" Source="/Sigimera;component/Images/logo.png" VerticalAlignment="Top"></Image>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <my:Map Height="607" HorizontalAlignment="Left" Name="map1" VerticalAlignment="Top" Width="450" CredentialsProvider="Aqn27uaJTGK2Xs8aDTSIWBCKlShjvXM8cgDfVnahbrVs1SrxcIMfffK68XKKTqYP" />
+        <Grid x:Name="ContentPanel" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" Grid.RowSpan="1">
+            <maps:Map VerticalAlignment="Top" Name="sampleMap" Loaded="sampleMap_Loaded" Height="550" >
+            </maps:Map>
         </Grid>
+        <StackPanel Grid.Row="4" Grid.Column="1" VerticalAlignment="Top" Height="56">
+
+        </StackPanel>
     </Grid>
- 
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True" Mode="Default">
+            <shell:ApplicationBarIconButton IconUri="/Icons/dark/MB_0014_world1.png" Text="aerial mode" Click="AerialMode" />
+            <shell:ApplicationBarIconButton IconUri="/Icons/dark/appbar.map.aerial.highway.png" Text="road mode" Click="RoadMode" />
+            <shell:ApplicationBarIconButton IconUri="/Icons/dark/add.png" Text="zoom in" Click="ZoomIn" />
+            <shell:ApplicationBarIconButton IconUri="/Icons/dark/minus.png" Text="zoom out" Click="ZoomOut" />
+
+            <shell:ApplicationBar.MenuItems>
+                <!--<shell:ApplicationBarMenuItem Text="Buy" Click="ApplicationBarMenuItem_Click_2" />-->
+                <shell:ApplicationBarMenuItem Text="About" Click="ApplicationBarMenuItem_Click" />
+                <shell:ApplicationBarMenuItem Text="Rate and Review" Click="ApplicationBarMenuItem_Click_2" />
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+
 </phone:PhoneApplicationPage>

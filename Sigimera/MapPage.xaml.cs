@@ -12,140 +12,150 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Windows.Navigation;
 using System.Device.Location;
-using Microsoft.Phone.Controls.Maps;
+using Microsoft.Phone.Maps;
 using SigimeraModel;
-
+using SigimeraModel.CrisisModel;
+using Microsoft.Phone.Tasks;
+using Microsoft.Phone.Maps.Controls;
+using System.Windows.Media.Imaging;
+using Windows.Devices.Geolocation;
+using Newtonsoft.Json;
+using Microsoft.Phone.Controls.Maps.Platform;
+using Microsoft.Phone.Maps.Toolkit;
+using System.Collections.ObjectModel;
 namespace Sigimera
 {
     public partial class MapPage : PhoneApplicationPage
     {
-        string place;
-        double magnitude;
-        double longitude;
-        double latitude;
-        DateTime dateTime;
-        double depth;
-        SolidColorBrush OneToFourMagnitudePushPin = new SolidColorBrush(Colors.Green);
-        SolidColorBrush FiveToSixMagnitudePushPin = new SolidColorBrush(Colors.Orange);
-        SolidColorBrush SixPlusMagnitudePushPin = new SolidColorBrush(Colors.Red);
+        const int MIN_ZOOM_LEVEL = 3;
+        const int MAX_ZOOM_LEVEL = 16;
+        Pushpin pin;
 
         public MapPage()
         {
             InitializeComponent();
-
+            
         }
 
         // When page is navigated to set data context to selected item in list
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            ShowCrisisOnTheMap();
+            
+       }
+        private void sampleMap_Loaded(object sender, RoutedEventArgs e)
+        {
+            MapsSettings.ApplicationContext.ApplicationId = "<applicationid>";
+            MapsSettings.ApplicationContext.AuthenticationToken = "<authenticationtoken>";
+        }   
+         private  void ShowCrisisOnTheMap()
+
         {
             try
             {
-                magnitude = Convert.ToDouble(NavigationContext.QueryString["Magnitude"]);
-                longitude = Convert.ToDouble(NavigationContext.QueryString["Longitude"]);
-                latitude = Convert.ToDouble(NavigationContext.QueryString["Latitude"]);
-                dateTime = Convert.ToDateTime(NavigationContext.QueryString["DateTime"]);
-                depth = Convert.ToDouble(NavigationContext.QueryString["Depth"]);
+                System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                if (App.place != null)
+                {
+                    sb.Append("Place: ").Append(App.place).Append("\n");
+                }
+                sb.Append("Subject: ").Append(App.subject).Append("\n");
+                sb.Append("Date: ").Append(App.dateTime);
+                sampleMap.Center = new GeoCoordinate(App.latitude, App.longitude);
+                sampleMap.ZoomLevel = 8;
+                sampleMap.CartographicMode = MapCartographicMode.Aerial;
+                if (App.alert_level == "Green")
+                {
+                    pin = new Pushpin
+                    {
+                        GeoCoordinate = new GeoCoordinate(App.latitude,App.longitude),
+                        Background= new SolidColorBrush(Colors.Green),
+                        Content = sb.ToString(),
+                        Foreground= new SolidColorBrush(Colors.Black)
+                    };
+                }
+                else if (App.alert_level == "Orange")
+                {
+                    pin = new Pushpin
+                    {
+                        GeoCoordinate = new GeoCoordinate(App.latitude, App.longitude),
+                        Background = new SolidColorBrush(Colors.Orange),
+                        Content = sb.ToString(),
+                        Foreground = new SolidColorBrush(Colors.Black)
+                    };
+                }
+                else
+                {
+                   pin = new Pushpin
+                    {
+                        GeoCoordinate = new GeoCoordinate(App.latitude, App.longitude),
+                        Background = new SolidColorBrush(Colors.Red),
+                        Content = sb.ToString(),
+                        Foreground = new SolidColorBrush(Colors.Black)
+                    };
 
-                map1.Center = new GeoCoordinate(latitude, longitude);
-                map1.ZoomBarVisibility = System.Windows.Visibility.Visible;
-                map1.ZoomLevel = 5;
-                map1.Mode = new Microsoft.Phone.Controls.Maps.AerialMode();
 
-                LoadMagnitudePushpinColorCodes();
+                }
+                MapOverlay overlay = new MapOverlay
+                {
+                    GeoCoordinate = new GeoCoordinate(App.latitude,App.longitude),
+                    Content = new Ellipse
+                    {
+                        Fill = new SolidColorBrush(Colors.Red),
+                        Width = 40,
+                        Height = 40
+                    }
+                };
 
-                AddSimplePushPin();
+
+                overlay.Content = pin;
+                MapLayer layer = new MapLayer();
+                layer.Add(overlay);
+                sampleMap.Layers.Add(layer);
+
+
             }
-            catch (Exception ex)
+            catch(Exception e)
             {
+                MessageBox.Show(e.Message);
             }
+            
         }
-
-        private void AddSimplePushPin()
+         #region ApplicationBar
+         private void ApplicationBarMenuItem_Click(object sender, EventArgs e)
         {
-            //Add a push pin
-            Pushpin pin = new Pushpin();
-            pin.Location = new GeoCoordinate(latitude, longitude);
-            pin.Foreground = new SolidColorBrush(Colors.White);
-
-            if (magnitude <= 4)
-            {
-                pin.Background = OneToFourMagnitudePushPin;
-            }
-            else if (magnitude > 4 && magnitude <= 6)
-            {
-                pin.Background = FiveToSixMagnitudePushPin;
-            }
-            else
-            {
-                pin.Background = SixPlusMagnitudePushPin;
-            }
-
-            pin.Content = String.Format("{0}\nMagnitude: {1}\n{2}\nDepth: {3} km", place, magnitude.ToString(), dateTime.ToString(), depth.ToString());
-
-            map1.Children.Add(pin);
+            NavigationService.Navigate(new Uri("/AboutPage.xaml", UriKind.Relative));
         }
 
-        private void AddCircle()
+        private void ApplicationBarMenuItem_Click_2(object sender, EventArgs e)
         {
-            Pushpin pin = new Pushpin();
-            pin.Location = new GeoCoordinate(latitude, longitude);
-            ImageBrush image = new ImageBrush()
-            {
-                ImageSource = new System.Windows.Media.Imaging.BitmapImage
-                                  (new Uri("circle.png",UriKind.Relative))
-            };
-
-            //---draw an ellipse inside the pushpin and fill it with the image---
-            pin.Content = new Rectangle()
-            {
-                Fill = image,
-                //                StrokeThickness = 10,
-                Height = 100,
-                Width = 100,
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
-                VerticalAlignment = System.Windows.VerticalAlignment.Center,
-                Opacity = 0.5
-
-            };
-
-            //---add the pushpin to the map---
-            map1.Children.Add(pin);
+            MarketplaceReviewTask review = new MarketplaceReviewTask();
+            review.Show();
         }
-
-        private void LoadMagnitudePushpinColorCodes()
+        void ZoomIn(object sender, EventArgs e)
         {
-            object value;
-
-            //1-4 Pushpin color
-            if (AppSettings.TryGetSetting<object>("1-4Mag", out value))
+            if (sampleMap.ZoomLevel < MAX_ZOOM_LEVEL)
             {
-                OneToFourMagnitudePushPin.Color = (Color)value;
-            }
-            else
-            {
-                OneToFourMagnitudePushPin.Color = Colors.Green;
-            }
-
-            //1-4 Pushpin color
-            if (AppSettings.TryGetSetting<object>("5-6Mag", out value))
-            {
-                FiveToSixMagnitudePushPin.Color = (Color)value;
-            }
-            else
-            {
-                FiveToSixMagnitudePushPin.Color = Colors.Orange;
-            }
-
-            //1-4 Pushpin color
-            if (AppSettings.TryGetSetting<object>("6PlusMag", out value))
-            {
-                SixPlusMagnitudePushPin.Color = (Color)value;
-            }
-            else
-            {
-                SixPlusMagnitudePushPin.Color = Colors.Red;
+                sampleMap.ZoomLevel++;
+               // sampleMap.Center = new GeoCoordinate(App.latitude, App.longitude);
             }
         }
 
+        void ZoomOut(object sender, EventArgs e)
+        {
+           if (sampleMap.ZoomLevel > MIN_ZOOM_LEVEL)
+            {
+                sampleMap.ZoomLevel--;
+              //  sampleMap.Center = new GeoCoordinate(App.latitude, App.longitude);
+            }
+        }
+        void AerialMode(object sender, EventArgs e)
+        {
+            sampleMap.CartographicMode = MapCartographicMode.Aerial;
+        }
+        void RoadMode(object sender, EventArgs e)
+        {
+            sampleMap.CartographicMode = MapCartographicMode.Road;
+        }
+    #endregion
     }
 }

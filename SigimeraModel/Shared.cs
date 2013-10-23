@@ -39,6 +39,9 @@ namespace SigimeraModel
         #endregion
 
         public const string CRISIS_LIST_URL = @"http://api.sigimera.org/v1/crises?auth_token={0}&output=short";
+        public const string CRISIS_INDIVIDUAL_URL = @"http://api.sigimera.org/v1/crises/{0}?auth_token={1}&output=short";
+
+        public const string STATS_MAIN_URL = @"http://api.sigimera.org/v1/stats/crises?auth_token={0}";
 
         //The call below creates a token if exists none otherwise old one is returned
         public const string URL_GENERATE_TOKEN = @"http://api.sigimera.org/v1/tokens.json";

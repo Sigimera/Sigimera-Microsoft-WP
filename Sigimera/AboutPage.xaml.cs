@@ -45,6 +45,7 @@ namespace Sigimera
             {
                 Microsoft.Phone.Tasks.EmailComposeTask emailComposeTask = new Microsoft.Phone.Tasks.EmailComposeTask();
                 emailComposeTask.To = "Usman.Ur.Rehman.Ahmed@outlook.com";
+                emailComposeTask.Cc = "asma_bhatti@hotmail.co.uk";
                 emailComposeTask.Subject = "Feedback: Sigimera";
                 emailComposeTask.Body = "Contact for feature request, suggestions, bug report or feedback.";
                 emailComposeTask.Show(); // Launches send mail screen
@@ -67,6 +68,19 @@ namespace Sigimera
             {
                 //Do Nothing
             }
+        }
+        private void Link_Tap1(object sender, RoutedEventArgs e)
+        {
+            WebBrowserTask task = new WebBrowserTask();
+            task.URL = "https://api.sigimera.org/";
+            task.Show();
+        }
+
+        private void Link_Tap2(object sender, RoutedEventArgs e)
+        {
+            WebBrowserTask task = new WebBrowserTask();
+            task.URL = "http://crises.sigimera.org/";
+            task.Show();
         }
 
     }

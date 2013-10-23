@@ -101,8 +101,9 @@
   <ItemGroup>
     <Reference Include="Microsoft.Phone.Controls, Version=8.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Phone.Controls.Maps, Version=8.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Phone.Controls.Toolkit, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b772ad94eb9ca604, processorArchitecture=MSIL">
-      <HintPath>E:\BSSE\Windows Applications\Windows Phone\End Times &amp; Syria\Syria\Syria\Bin\Debug\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
+    <Reference Include="Microsoft.Phone.Controls.Toolkit, Version=8.0.1.0, Culture=neutral, PublicKeyToken=b772ad94eb9ca604, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WPtoolkit.4.2013.08.16\lib\wp8\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Referemce\Newtonsoft.Json.dll</HintPath>
@@ -128,6 +129,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PushDetail.xaml.cs">
+      <DependentUpon>PushDetail.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -155,12 +159,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PushDetail.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
@@ -173,11 +183,24 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Icons\dark\appbar.map.aerial.highway.png" />
+    <Content Include="Icons\dark\MB_0014_world1.png" />
+    <Content Include="Icons\light\appbar.map.aerial.highway.png" />
+    <Content Include="Icons\light\MB_0014_world1.png" />
+    <Content Include="README_FIRST.txt" />
+    <Content Include="Reference\Microsoft.Phone.Controls.dll" />
+    <Content Include="Reference\Microsoft.Phone.Controls.Maps.dll" />
+    <Content Include="Toolkit.Content\ApplicationBar.Add.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
     <Resource Include="Images\Entities\Cyclone.png" />
     <Resource Include="Images\Entities\Earthquake.png" />
     <Resource Include="Images\Entities\Flood.png" />
     <Resource Include="Images\Entities\Volcano.png" />
     <Resource Include="Images\logo.png" />
+    <Content Include="Icons\dark\add.png" />
     <Content Include="Icons\dark\appbar.back.rest.png" />
     <Content Include="Icons\dark\appbar.cancel.rest.png" />
     <Content Include="Icons\dark\appbar.check.rest.png" />
@@ -185,9 +208,13 @@
     <Content Include="Icons\dark\appbar.feature.email.rest.png" />
     <Content Include="Icons\dark\appbar.feature.search.rest.png" />
     <Content Include="Icons\dark\appbar.feature.settings.rest.png" />
+    <Content Include="Icons\dark\appbar.message.smiley.png" />
     <Content Include="Icons\dark\appbar.questionmark.rest.png" />
     <Content Include="Icons\dark\appbar.refresh.rest.png" />
+    <Content Include="Icons\dark\appbar.share.png" />
     <Content Include="Icons\dark\appbar.share.rest.png" />
+    <Content Include="Icons\dark\minus.png" />
+    <Content Include="Icons\light\add.png" />
     <Content Include="Icons\light\appbar.back.rest.png" />
     <Content Include="Icons\light\appbar.cancel.rest.png" />
     <Content Include="Icons\light\appbar.check.rest.png" />
@@ -195,13 +222,25 @@
     <Content Include="Icons\light\appbar.feature.email.rest.png" />
     <Content Include="Icons\light\appbar.feature.search.rest.png" />
     <Content Include="Icons\light\appbar.feature.settings.rest.png" />
+    <Content Include="Icons\light\appbar.message.smiley.png" />
     <Content Include="Icons\light\appbar.questionmark.rest.png" />
     <Content Include="Icons\light\appbar.refresh.rest.png" />
+    <Content Include="Icons\light\appbar.share.png" />
     <Content Include="Icons\light\appbar.share.rest.png" />
     <Resource Include="Images\Home\all_small.png" />
     <Resource Include="Images\Home\latest_small.png" />
     <Resource Include="Images\Home\today_small.png" />
     <Resource Include="Images\Home\about_icon.png" />
+    <Content Include="Icons\light\minus.png" />
+    <Content Include="Images\Details\alert_level.png" />
+    <Content Include="Images\Details\description.png" />
+    <Content Include="Images\Details\location.png" />
+    <Content Include="Images\Details\people.png" />
+    <Content Include="Images\Details\severity.png" />
+    <Content Include="Reference\Microsoft.Phone.Controls.Toolkit.dll" />
+    <Content Include="Reference\Newtonsoft.Json.dll" />
+    <Content Include="Reference\Newtonsoft.Json.pdb" />
+    <Content Include="Reference\Newtonsoft.Json.xml" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>
@@ -213,6 +252,7 @@
       <Name>SigimeraModel</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
